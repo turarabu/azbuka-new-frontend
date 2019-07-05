@@ -13,6 +13,7 @@ function main () {
     var vue = new Vue({
         router,
         store,
+        productionSourceMap: false,
         render: handle => handle(app)
     })
 
