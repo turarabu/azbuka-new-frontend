@@ -5,6 +5,7 @@
                 span( class='query-text' ) {{ search.name && search.name.value }}
 
             p( class='found-text' v-if='excluded === getItems.length' ) Ничего не найдено
+                img( class='empty-filter' src='/image/empty-filter.jpg' )
             p( class='found-text' v-else ) Найдены следующие товары:
 
         div( class='catalog-items' :class='{small: $store.state.filter === true}' )

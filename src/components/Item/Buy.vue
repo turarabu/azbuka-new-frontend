@@ -15,6 +15,7 @@
         div( class='left-div' )
             span( class='spec-name' ) Остатки
             div( class='left-line' )
+                div( class='child' :style='`width: ${ count }%`' )
 
             div( class='warehouse-div' )
                 div( class='empty' v-if='getOption().warehouses.length === 0' ) Нет в наличии
@@ -226,13 +227,14 @@ function toReadablePrice (price) {
         overflow hidden
         height 8px
         width 520px
-        &:after
+        
+        .child
             background $red
             border-radius 0 5px 5px 0
             content ''
             display block
             height 100%
-            width 30%
+            width attr('child')
 
     .warehouse-div
         align-items center

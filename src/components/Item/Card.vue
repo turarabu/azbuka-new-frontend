@@ -1,7 +1,7 @@
 <template lang="pug">
     div( class='item-card' :class='{hide}' )
         div( class='image-div' @click='openPreview' )
-            img( class='image' :src='`/images/dynamic/${ item.headImage }.jpg`' )
+            img( class='image' :src='`/images/dynamic/${ item.headImage }.jpg`' onerror='this.onerror = null; this.src = "/images/not-found.png"' )
         
         router-link( tag='div' class='meta' :to='`/item/${ item.id }`' :linkto='`/item/${ item.id }`' )
             p( class='name' ) {{ item.name }}
