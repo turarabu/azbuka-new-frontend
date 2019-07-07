@@ -9,7 +9,7 @@
                 i( :class="'icon icon-{{ parent.icon }}'" )
                 span {{ catalog.name }}
 
-            span( class='go' ) перейти
+            span( class='go' ) перейти →
 </template>
 
 <script>

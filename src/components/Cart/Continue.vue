@@ -44,7 +44,7 @@ function next () {
     align-items flex-end
     display flex
     flex-direction column
-    margin 64px 0 256px 0
+    margin-top 64px
     width 100%
 
     .row

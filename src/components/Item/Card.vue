@@ -14,7 +14,9 @@
                     span( class='current' :class='{old: hasDiscount}' ) {{ maxPrice }}
                     span( class='discount' v-if='hasDiscount' ) {{ minPrice }}
 
-                i( class='add icon icon-cart' )
+                span( class='add' )
+                    i( class='icon icon-cart' )
+                    span( class='plus' ) +
 
 </template>
 
@@ -203,5 +205,25 @@ function toReadablePrice (price) {
             margin-left -4px
             padding 8px 16px
 
-        
+    .add
+        color $black
+        display inline-block
+        font-size 36px
+        margin 0 4px
+        position relative
+
+        .plus
+            align-items center
+            background $red
+            border-radius 50%
+            color $white
+            content '+'
+            display flex
+            font-size 18px
+            justify-content center
+            position absolute
+            top -8px
+            right -8px
+            height 24px
+            width 24px
 </style>

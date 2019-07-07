@@ -13,8 +13,12 @@
                         router-link( class='link' :to='`/${ crumb.type }/${ crumb.id }`' ) {{ crumb.name }}
 
             div( class='right' v-if='last.collection === true' )
+                i( class='icon icon-search' )
                 input( class='search' placeholder='Поиск' v-model='search' )
-                span( class='filter-switcher' @click='switchFilter' ) Подобрать по параметрам
+
+                span( class='filter-switcher' @click='switchFilter' )
+                    i( class='icon icon-filter' )
+                    span Подобрать по параметрам
 
 
                     
@@ -192,6 +196,11 @@ function getParents (crumbs, state) {
             .link
                 color $black
 
+    .icon-search
+        position relative
+        top 1px
+        right -28px
+
     .search
         border 1px solid
         border-radius 50px
@@ -199,6 +208,13 @@ function getParents (crumbs, state) {
         outline none
         padding 6px 8px 6px 32px
         width 360px
+
+    .icon-filter
+        display inline-block
+        font-size 20px
+        margin 0 8px
+        position relative
+        top 3px
 
     .filter-switcher
         display inline-block

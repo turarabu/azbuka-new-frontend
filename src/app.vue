@@ -81,9 +81,12 @@ function scrollable () {
 </script>
 
 <style lang="stylus">
+@import '~@/style/icons'
+
 #app
     overflow auto
     overflow-x hidden
+    padding-bottom 256px
     position absolute
     top 0
     bottom 0

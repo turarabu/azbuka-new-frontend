@@ -7,8 +7,8 @@
             :key='nav.id'
             :to='`/catalog/${ nav.id }`'
             )
-                    i( :class='[`icon`, `icon-${ nav.icon }`]' )
-                    span {{ nav.name }}
+                    i( class='icon' :class='`icon-${ nav.icon }`' )
+                    span( class='text' ) {{ nav.name }}
 
 </template>
 
@@ -39,11 +39,29 @@ function catalog (level) {
     z-index 2
 
     .block
+        align-items center
         display flex
         justify-content space-between
 
+    .icon
+        display inline-block
+        font-size 24px
+        margin-right 6px
+        position relative
+        top 4px
+        &.icon-softFurniture
+            font-size 28px
+            top 6px
+
     .link
         color $white
-        font-size 18px
+        font-size 20px
+        font-weight 300
         padding 12px 0
+        position relative
+        top -2px
+
+        .text
+            position relative
+            // top -2px
 </style>

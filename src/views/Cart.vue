@@ -1,6 +1,9 @@
 <template lang="pug">
     div#cart( class='block' )
-        h3( class='title' ) Мои покупки
+        h3( class='title' )
+            i( class='icon icon-piggy-bank' )
+            span Мои покупки
+
         div( class='steps-div' )
             span( class='step' :class='{active: step > 0}' ) Список товаров
             span( class='step' :class='{active: step > 1}' ) Сборка и доставка
@@ -17,7 +20,7 @@
                 td( class='total data' ) Стоимость
                 td( class='actions data' ) 
 
-            CartItem( v-for='(item, index) in cart' :key='index' :item='item' @total='addTotal' )
+            CartItem( v-for='(item, index) in cart' :id='index' :key='index' :item='item' @total='addTotal' )
         CartContinue( :total='total' :build='build' :discount='discount' :step='step' )
 </template>
 
@@ -45,7 +48,6 @@ function cart () {
 
 // Methods
 function addTotal (total) {
-    console.log(total)
     this.total += total
 }
 </script>
@@ -56,11 +58,18 @@ function addTotal (total) {
 #cart
 
     .title
+        align-items center
         color lighten($dark-gray, 15)
+        display flex
         font-size 20px
         font-weight 500
+        justify-content  center
         margin-bottom 24px
-        text-align center
+
+        .icon
+            display inline-block
+            font-size 32px
+            margin 0 12px
 
     .steps-div
         align-items center

@@ -12,6 +12,7 @@ export function Store () {
             'item-preview': itemPreview,
             'full-slider': fullSlider,
             'add': addToCart,
+            'delete': deleteFromCart,
             'set-search': setSearch,
             'switch-filter': switchFilter
         }
@@ -53,6 +54,10 @@ function fullSlider (state, set) {
 
 function addToCart (state, order) {
     state.cart.push(order)
+}
+
+function deleteFromCart (state, id) {
+    state.cart.splice(id, 1)
 }
 
 function setSearch (state, search) {

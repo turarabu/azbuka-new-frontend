@@ -11,6 +11,7 @@
         router-link( tag='div' class='right' to='/cart/1' )
             span( class='cart-text' ) Корзина
             div( class='cart-div' )
+                i( class='icon icon-cart' )
                 span( class='count' ) {{ cart.length }}
 </template>
 
@@ -51,6 +52,12 @@ function cart () {
             font-weight 300
             margin-left 12px
 
+    .cart-text
+        color lighten($dark-gray, 20)
+        font-size 18px
+        font-weight 500
+        margin 0 24px
+
     .cart-div
         background #555
         align-items center
@@ -58,6 +65,23 @@ function cart () {
         display flex
         justify-content center
         margin-left 16px
+        position relative
         height 128px
         width 128px
+
+        .icon-cart
+            font-size 56px
+
+        .count
+            align-items center
+            background $red
+            border-radius 50%
+            color $white
+            display flex
+            justify-content center
+            position absolute
+            top 12px
+            right 18px
+            height 42px
+            width 42px
 </style>

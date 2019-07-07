@@ -2,8 +2,10 @@
     div#full-slider( v-if='item !== false' @click='checkForClose' )
         div( class='content block' )
             div( class='images-list-div' )
-                button( class='arrow top' @click='addScroll(-500)' ) i
-                button( class='arrow bottom' @click='addScroll(500)' ) b
+                button( class='arrow top' @click='addScroll(-500)' )
+                    i( class='icon icon-angle-up' )
+                button( class='arrow bottom' @click='addScroll(500)' )
+                    i( class='icon icon-angle-up' )
 
                 div( class='list' )
                     div( class='image-div' v-for='(image, index) in list' @click='current = index' )
@@ -118,7 +120,7 @@ function addScroll (to) {
             color $white
             display block
             outline none
-            padding 16px 0
+            padding 8px 0
             position absolute
             left 0
             width 100%
@@ -126,6 +128,10 @@ function addScroll (to) {
                 top 0
             &.bottom
                 bottom 0
+                transform rotateZ(180deg)
+
+            .icon
+                font-size 24px
 
     .image-div
         background $white

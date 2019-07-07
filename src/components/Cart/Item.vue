@@ -1,5 +1,5 @@
 <template lang="pug">
-    tr( class='cart-item' )
+    tr( class='cart-item' :class='{ hide }' )
         td( class='image image-div border' )
             img( class='image' :src='`/images/dynamic/${ item.item.headImage }.jpg`' )
         
@@ -12,17 +12,20 @@
         td( class='build border' ) {{ item.item.buildable ? 'Да' : 'Нет' }}
         td( class='total border' ) {{ price() * item.count }} руб
         td( class='actions border' )
-            i( class='icon icon-trash' ) d
+            i( class='icon icon-trash' @click='trash' )
 </template>
 
 <script>
+import { setTimeout } from 'timers';
 export default {
-    props: ['item'],
+    props: ['item', 'id'],
     computed: { selected },
     mounted: init,
-    methods: { price },
+    methods: { price, trash },
     data: function () {
-        return {}
+        return {
+            hide: false
+        }
     }
 }
 
@@ -45,6 +48,21 @@ function price () {
     return Math.min(...list)
 }
 
+function trash () {
+    if (this.hide === true)
+        return
+
+    else {
+        this.hide = true
+        setTimeout(() => {
+            if (this.hide === true) {
+                this.$store.commit('delete', this.id)
+                this.hide = false
+            }
+        }, 500)
+    }
+}
+
 // Mounted
 function init () {
     this.$emit('total', this.price() * this.item.count)
@@ -55,6 +73,9 @@ function init () {
 @import '~@/style/palette'
 
 .cart-item
+    opacity 1
+    &.hide
+        opacity 0
 
     .border
         border-bottom 1px dashed lighten($dark-gray, 15)
@@ -84,4 +105,10 @@ function init () {
         font-size 18px
         font-weight 500
         text-align center
+
+    .icon-trash
+        color $red
+        display inline-block
+        font-size 24px
+        margin 0 4px
 </style>

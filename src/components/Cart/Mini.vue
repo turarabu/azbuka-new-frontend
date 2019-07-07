@@ -9,29 +9,43 @@
             div( v-if='cart.length === 0' )
                 p( class='center' ) Корзина пуста
             
-            div( v-else )
+            router-link( tag='div' v-else to='/cart/1' )
                 p( class='count' ) В корзине {{ cart.length }} {{ countText }}
                 p( class='total' ) На сумму {{ cartCount() }} руб
 
-        span( class='to-top' ) >
+        span( class='to-top' :class='{show: scrollTop >= 1250}' @click='toTop' )
+            i( class='icon icon-angle-up' )
 </template>
 
 <script>
 export default {
     computed: { cart, countText },
-    methods: { cartCount, price, addCart },
+    methods: { toTop, cartCount, price, addCart },
     mounted: init,
     data: function () {
         return {
             add: false,
             hide: false,
-            toCart: false
+            toCart: false,
+            scrollTop: 0
         }
     }
 }
 
 function cart () {
     return this.$store.state.cart
+}
+
+// Methods
+function toTop () {
+    var app = document.querySelector('#app')
+
+    var interval = setInterval(() => {
+        app.scrollTop -= 50
+
+        if (app.scrollTop <= 10)
+            return clearInterval(interval)
+    }, 10)
 }
 
 function countText () {
@@ -78,9 +92,15 @@ function addCart (item) {
 
 // Mounted
 function init () {
+    var app = document.querySelector('#app')
+
     this.$store.subscribe(mutation => {
         if (mutation.type === 'add')
             this.addCart(mutation.payload)
+    })
+
+    app.addEventListener('scroll', event => {
+        this.scrollTop = app.scrollTop
     })
 }
 
@@ -173,6 +193,9 @@ function getDiscount (option) {
         font-size 20px
         display flex
         justify-content center
+        opacity 0
         height 92px
         width 92px
+        &.show
+            opacity 1
 </style>

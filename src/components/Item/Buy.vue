@@ -17,10 +17,12 @@
             div( class='left-line' )
 
             div( class='warehouse-div' )
-                p( class='warehouses-text' )
-                    span( class='text' ) В наличии на складах
-                    span( class='empty' v-if='getOption().warehouses.length === 0' ) Нет в наличии
-                    select( class='warehouses' v-else v-model='warehouse' )
+                div( class='empty' v-if='getOption().warehouses.length === 0' ) Нет в наличии
+                div( class='warehouses-row' v-else )
+                    p( class='warehouses-text' )
+                        span( class='text' ) В наличии на складах
+                    i( class='select-gps icon icon-map-marker' )
+                    select( class='warehouses' v-model='warehouse' )
                         option( v-for='(w, i) in getOption().warehouses' :value='i' ) {{ w }}
 
 
@@ -38,6 +40,7 @@
 
         div( class='line' v-for='spec in item.specs' )
             span( class='spec-name' ) Выберите {{ spec.name }}
+            i( class='select-arrow icon icon-angle-up' )
             select( class='select' :name='spec.id' v-model='selected' @change='warehouse = 0' )
                 option( v-for='o in spec.options' :value='o.id' ) {{ o.name }}
 
@@ -57,8 +60,8 @@ export default {
         if (this.count > option.left || this.count === 0)
             this.count = Math.min(1, option.left)
     },
+
     data: function () {
-        console.log(this.item)
         var selected = this.item.specs[0].options[0].id
         var warehouse = 0
         
@@ -238,6 +241,9 @@ function toReadablePrice (price) {
         margin 12px 0 20px 0
         width 460px
 
+        .warehouses-row
+            display block
+
         .text
             display block
             color lighten($dark-gray, 15)
@@ -245,12 +251,17 @@ function toReadablePrice (price) {
             font-weight 500
             margin 4px 0
 
+        .select-gps
+            display inline-block
+            color $red
+
         .warehouses
             background transparent
             border none
             font-size 16px
             font-weight 500
             outline none
+            padding-right 8px
             width 160px
 
         .left
@@ -278,6 +289,12 @@ function toReadablePrice (price) {
         text-align center
         width 48px
 
+    .select-arrow
+        display inline-block
+        transform rotateZ(180deg)
+        position relative
+        left 250px
+
     .select
         background transparent
         border 1px solid
@@ -287,6 +304,7 @@ function toReadablePrice (price) {
         outline none
         padding 6px 16px
         width 260px
+        -webkit-appearance none
 
     .add-to-cart
         background $red
