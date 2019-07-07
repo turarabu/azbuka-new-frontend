@@ -3,7 +3,7 @@
         div( class='image-div' @click='openPreview' )
             img( class='image' :src='`/images/dynamic/${ item.headImage }.jpg`' )
         
-        router-link( tag='div' class='meta' :to='`/item/${ item.id }`' )
+        router-link( tag='div' class='meta' :to='`/item/${ item.id }`' :linkto='`/item/${ item.id }`' )
             p( class='name' ) {{ item.name }}
 
             p( class='price-text' ) Цена
