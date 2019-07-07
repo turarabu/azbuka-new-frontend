@@ -2,7 +2,7 @@
 
     router-link( tag='div' class='catalog-card' :to='`/catalog/${ catalog.id }`' )
         div( class='image-div' )
-            img( class='image' :src='`http://95.167.9.22:81/images/${ catalog.headImage }.jpg`' )
+            img( class='image' :src='`/images/dynamic/${ catalog.headImage }.jpg`' )
 
         div( class='bottom' )
             span( class='name' )

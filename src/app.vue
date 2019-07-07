@@ -1,11 +1,12 @@
 <template lang="pug">
-    div#app( :class='{"no-scroll": scrollable === false}' )
+    div#app( :class='{"no-scroll": scrollable === false}' v-if='ready === true' )
         HeaderComponent
-        router-view( v-if='ready === true' )
-        Preloader( v-else )
+        router-view
 
         ItemPreview
         FullSlider
+
+    Preloader( v-else )
 
 </template>
 
@@ -80,6 +81,7 @@ function scrollable () {
 <style lang="stylus">
 #app
     overflow auto
+    overflow-x hidden
     position absolute
     top 0
     bottom 0
@@ -95,6 +97,7 @@ function scrollable () {
     padding 0
     text-decoration none
     transition .3s all
+    user-select none
 
 .block
     margin 0 auto

@@ -33,8 +33,10 @@ function catalog (level) {
 @import '~@/style/palette'
 
 .nav
-    background $red
-    margin 16px 0
+    background $red    
+    margin-top 16px
+    position relative
+    z-index 2
 
     .block
         display flex

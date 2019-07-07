@@ -11,7 +11,9 @@ export function Store () {
             'set-items': setItems,
             'item-preview': itemPreview,
             'full-slider': fullSlider,
-            'add': addToCart
+            'add': addToCart,
+            'set-search': setSearch,
+            'switch-filter': switchFilter
         }
     })
 }
@@ -23,7 +25,9 @@ function state () {
         items: [],
         preview: false,
         fullSlider: false,
-        scrollable: true
+        scrollable: true,
+        filter: false,
+        search: {}
     }
 }
 
@@ -49,4 +53,12 @@ function fullSlider (state, set) {
 
 function addToCart (state, order) {
     state.cart.push(order)
+}
+
+function setSearch (state, search) {
+    state.search[ search.prop ] = search.value
+}
+
+function switchFilter (state) {
+    state.filter = !state.filter
 }

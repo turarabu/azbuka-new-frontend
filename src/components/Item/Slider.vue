@@ -1,11 +1,11 @@
 <template lang="pug">
     div( class='item-slider' )
         div( class='head-image-div' @click='openFullSlider' )
-            img( class='image' :src='`http://95.167.9.22:81/images/${ list[ current ] }.jpg`' )
+            img( class='image' :src='`/images/dynamic/${ list[ current ] }.jpg`' )
 
         div( class='images-list-div' )
             div( class='image-div' v-for='(image, index) in list' @click='current = index' )
-                img( class='image' :src='`http://95.167.9.22:81/images/${ image }.jpg`' )
+                img( class='image' :src='`/images/dynamic/${ image }.jpg`' )
 
 
 </template>

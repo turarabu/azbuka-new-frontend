@@ -2,7 +2,7 @@
     div#header-top( class='block' )
         div( class='left' )
             router-link( tag='div' class='logo-div' to='/' )
-                img( class='logo' src='/images/logo.png' )
+                img( class='logo' src='/images/123logo.png' )
 
             span( class='big-text' )
                 span( class='bold' ) Больше выбора |

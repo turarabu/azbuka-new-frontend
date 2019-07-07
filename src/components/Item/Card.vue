@@ -1,7 +1,7 @@
 <template lang="pug">
-    div( class='item-card' )
+    div( class='item-card' :class='{hide}' )
         div( class='image-div' @click='openPreview' )
-            img( class='image' :src='`http://95.167.9.22:81/images/${ item.headImage }.jpg`' )
+            img( class='image' :src='`/images/dynamic/${ item.headImage }.jpg`' )
         
         router-link( tag='div' class='meta' :to='`/item/${ item.id }`' )
             p( class='name' ) {{ item.name }}
@@ -21,12 +21,35 @@
 <script>
 export default {
     props: ['item'],
+    computed: { search },
     methods: { openPreview },
+    mounted: init,
     data: function () {
         return {
+            hide: false,
             hasDiscount: hasDiscount(this.item),
             maxPrice: maxPrice(this.item),
             minPrice: minPrice(this.item)
+        }
+    }
+}
+
+// Computed
+function search () {
+    return this.$store.state.search
+}
+
+// Mounted
+function init () {
+    var list = Object.keys(this.search)
+
+    for (let key of list) {
+        let value = this.search[key]
+        let prop = getProp(key, this.item)
+
+        if (findValue(prop, value) === false) {
+            this.hide = true
+            return this.$emit('exclude', true)
         }
     }
 }
@@ -75,6 +98,28 @@ function minPrice (item) {
 }
 
 // Help functions
+function getProp (prop, item) {
+    var keys = prop.split('.')
+
+    for (let key of keys)
+        item = item[key]
+
+    return item
+}
+
+function findValue (key, value) {
+    switch (value.type) {
+        case 'search':
+            return key.toLowerCase().search(value.value.toLowerCase()) >= 0
+        case 'range':
+            return key >= value.min && key <= value.max
+        case 'exact':
+            return key == value.value
+    }
+    
+    return true
+}
+
 function calcDiscounts (base, discounts) {
     var result = []
 
@@ -98,6 +143,8 @@ function toReadablePrice (price) {
 
 .item-card
     border 1px solid darken($white-gray, 5)
+    &.hide
+        display none
     
     .image-div
         align-items center
