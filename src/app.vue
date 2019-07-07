@@ -5,6 +5,7 @@
 
         ItemPreview
         FullSlider
+        MiniCart
 
     Preloader( v-else )
 
@@ -14,11 +15,12 @@
 import HeaderComponent from '@/components/Header/Index.vue'
 import Preloader from '@/views/Preloader.vue'
 import ItemPreview from '@/components/Item/Preview.vue'
+import MiniCart from '@/components/Cart/Mini.vue'
 import FullSlider from '@/components/Item/FullSlider.vue'
 
 export default {
     created: init,
-    components: { HeaderComponent, Preloader, ItemPreview, FullSlider },
+    components: { HeaderComponent, Preloader, ItemPreview, FullSlider, MiniCart },
     computed: { scrollable },
     data: function () {
         return {

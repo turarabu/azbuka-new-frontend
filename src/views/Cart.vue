@@ -16,20 +16,37 @@
                 td( class='build data' ) Сборка
                 td( class='total data' ) Стоимость
                 td( class='actions data' ) 
-            CartItem( v-for='(item, index) in cart' :key='index' :item='item' )
+
+            CartItem( v-for='(item, index) in cart' :key='index' :item='item' @total='addTotal' )
+        CartContinue( :total='total' :build='build' :discount='discount' :step='step' )
 </template>
 
 <script>
 import CartItem from '@/components/Cart/Item.vue'
+import CartContinue from '@/components/Cart/Continue.vue'
 
 export default {
     props: ['step'],
-    components: { CartItem },
-    computed: { cart }
+    components: { CartItem, CartContinue },
+    methods: { addTotal },
+    computed: { cart },
+    data: function () {
+        return {
+            total: 0,
+            build: 0,
+            discount: 0
+        }
+    }
 }
 
 function cart () {
     return this.$store.state.cart
+}
+
+// Methods
+function addTotal (total) {
+    console.log(total)
+    this.total += total
 }
 </script>
 

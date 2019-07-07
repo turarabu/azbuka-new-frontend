@@ -151,4 +151,8 @@ function addScroll (to) {
         position relative
         height 100%
         width calc(100% - (256px + 32px))
+
+        .image
+            max-width 100%
+            max-height 100%
 </style>
