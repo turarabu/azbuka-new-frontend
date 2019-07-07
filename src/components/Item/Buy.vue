@@ -109,7 +109,7 @@ function addToCart () {
     else this.$store.commit('add', {
         item: this.item,
         count: this.count,
-        selected: selected
+        selected: this.selected
     })
 }
 
