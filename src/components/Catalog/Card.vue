@@ -2,7 +2,7 @@
 
     router-link( tag='div' class='catalog-card' :to='`/catalog/${ catalog.id }`' )
         div( class='image-div' )
-            img( class='image' :src='`/images/dynamic/${ catalog.headImage }.jpg`' )
+            img( class='image' :src='`/images/dynamic/${ catalog.headImage }.jpg`' onerror='this.onerror = null; this.src = "/images/not-found.png"' )
 
         div( class='bottom' )
             span( class='name' )
