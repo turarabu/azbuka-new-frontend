@@ -1,5 +1,5 @@
 <template lang="pug">
-    div#mini-cart
+    div#mini-cart( :class='{show: scrollTop >= 1250}' )
         div( class='cart' )
             div( class='item' :class='{toCart, hide}' v-if='add !== false' )
                 div( class='image-div' )
@@ -13,7 +13,10 @@
                 p( class='count' ) В корзине {{ cart.length }} {{ countText }}
                 p( class='total' ) На сумму {{ cartCount() }} руб
 
-        span( class='to-top' :class='{show: scrollTop >= 1250}' @click='toTop' )
+            span( class='cart-button' )
+                i( class='icon icon-cart' )
+
+        span( class='to-top' @click='toTop' )
             i( class='icon icon-angle-up' )
 </template>
 
@@ -39,13 +42,14 @@ function cart () {
 // Methods
 function toTop () {
     var app = document.querySelector('#app')
+    var scrolled = app.scrollTop
 
     var interval = setInterval(() => {
-        app.scrollTop -= 50
+        app.scrollTop -= Math.max(25, app.scrollTop / 20)
 
         if (app.scrollTop <= 10)
             return clearInterval(interval)
-    }, 10)
+    }, 15)
 }
 
 function countText () {
@@ -130,6 +134,9 @@ function getDiscount (option) {
     bottom 32px
     right 32px
     z-index 10
+    &.show .to-top
+        width 92px
+        opacity 1        
 
     .cart
         background $white-gray
@@ -137,7 +144,7 @@ function getDiscount (option) {
         margin 0 16px
         position relative
         height 92px
-        width 360px
+        width 420px
 
     .item
         align-items center
@@ -186,16 +193,28 @@ function getDiscount (option) {
         font-weight 500
         margin 4px 24px
 
+    .cart-button
+        align-items center
+        background $dark-gray
+        display flex
+        color $white
+        font-size 36px
+        justify-content center
+        position absolute
+        top 0
+        right 0
+        height 92px
+        width 92px
+
     .to-top
         align-items center
         background $red
         color $white
-        font-size 20px
+        font-size 32px
         display flex
         justify-content center
         opacity 0
+        overflow hidden
         height 92px
-        width 92px
-        &.show
-            opacity 1
+        width 0
 </style>

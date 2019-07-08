@@ -320,4 +320,10 @@ function toReadablePrice (price) {
         padding 12px 16px
         text-transform uppercase
         width 260px
+
+        .icon
+            display inline-block
+            margin-right 8px
+            position relative
+            top 2px
 </style>

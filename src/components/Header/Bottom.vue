@@ -12,7 +12,7 @@
                         i( class='icon icon-arrow-right' ) →
                         router-link( class='link' :to='`/${ crumb.type }/${ crumb.id }`' ) {{ crumb.name }}
 
-            div( class='right' v-if='last.collection === true' )
+            div( class='right' v-if='last.level === 2' )
                 i( class='icon icon-search' )
                 input( class='search' placeholder='Поиск' v-model='search' )
 

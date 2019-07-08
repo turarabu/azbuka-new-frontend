@@ -30,8 +30,8 @@ export default {
         return {
             hide: false,
             hasDiscount: hasDiscount(this.item),
-            maxPrice: maxPrice(this.item),
-            minPrice: minPrice(this.item)
+            maxPrice: toReadablePrice( maxPrice(this.item) ),
+            minPrice: toReadablePrice( minPrice(this.item) )
         }
     }
 }
@@ -47,7 +47,7 @@ function init () {
 
     for (let key of list) {
         let value = this.search[key]
-        let prop = getProp(key, this.item)
+        let prop = getProp.call(this, key, this.item)
 
         if (findValue(prop, value) === false) {
             this.hide = true
@@ -81,7 +81,7 @@ function maxPrice (item) {
             prices.push(option.prices.current)
     }
 
-    return toReadablePrice( Math.max(...prices) )
+    return Math.max(...prices)
 }
 
 function minPrice (item) {
@@ -95,13 +95,17 @@ function minPrice (item) {
             prices.push( ...calcDiscounts(current, discounts) )
         }
     }
-
-    return toReadablePrice( Math.min(...prices) )
+    
+    return Math.min(...prices)
 }
 
 // Help functions
 function getProp (prop, item) {
     var keys = prop.split('.')
+
+    if (prop === 'price') {
+        return minPrice(this.item)
+    }
 
     for (let key of keys)
         item = item[key]
@@ -109,21 +113,21 @@ function getProp (prop, item) {
     return item
 }
 
-function findValue (key, value) {
-    switch (value.type) {
+function findValue (key, data) {
+    switch (data.type) {
         case 'search':
-            return key.toLowerCase().search(value.value.toLowerCase()) >= 0
+            return key.toLowerCase().search(data.value.toLowerCase()) >= 0
         case 'range':
-            return key >= value.min && key <= value.max
+            return key >= data.value.min && key <= data.value.max
         case 'exact':
-            return key == value.value
+            return key == data.value
     }
     
     return true
 }
 
 function calcDiscounts (base, discounts) {
-    var result = []
+    var result = [base]
 
     for (let dis of discounts)
         result.push( base * ((100 - dis.discount) / 100) )

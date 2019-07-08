@@ -1,7 +1,7 @@
 <template lang="pug">
     div#catalog
         span( class='id' ) {{ id }}
-        CatalogItems( v-if='getNav.isCollection === true' :parent='getNav' )
+        CatalogItems( v-if='getNav.level > 1' :parent='getNav' )
         CatalogChilds( v-else :parent='getNav' )
 
 </template>

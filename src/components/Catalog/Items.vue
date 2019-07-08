@@ -1,14 +1,15 @@
 <template lang="pug">
-    div( class='block' v-if='show === true' )
+    div( class='block-div block' )
         div( class='search-results' v-if='excluded > 0' :class='{show: excluded > 0}' )
             span( class='your-request' ) По вашему запросу:
                 span( class='query-text' ) {{ search.name && search.name.value }}
 
-            p( class='found-text' v-if='excluded === getItems.length' ) Ничего не найдено
-                img( class='empty-filter' src='/image/empty-filter.jpg' )
+            div( v-if='excluded === getItems.length' )
+                p( class='found-text'  ) Ничего не найдено
+                img( class='empty-filter' src='/images/empty-filter.jpg' )
             p( class='found-text' v-else ) Найдены следующие товары:
 
-        div( class='catalog-items' :class='{small: $store.state.filter === true}' )
+        div( class='catalog-items' :class='{small: $store.state.filter === true}' v-if='show === true' )
             ItemCard(
                 v-for='item in getItems'
                 @exclude='++excluded'
@@ -16,7 +17,7 @@
                 :item='item'
             )
 
-            ItemsFilter( :catalog='parent' )
+        ItemsFilter( :catalog='parent' )
 </template>
 
 <script>
@@ -43,7 +44,7 @@ function getItems () {
     var parent = 0
 
     for (let item of this.$store.state.items) {
-        if( item.parentId == this.parent.parentId )
+        if( item.parentId == this.parent.id )
             list.push(item)
     }
 
@@ -79,6 +80,9 @@ function forceRender () {
 <style lang="stylus">
 @import '~@/style/palette'
 
+.block-div
+    position relative
+
 .catalog-items
     display grid
     grid-row-gap 24px
@@ -111,4 +115,10 @@ function forceRender () {
         font-size 18px
         padding 4px 2px
         margin 6px
+
+    .empty-filter
+        display block
+        margin 32px
+        position absolute
+        width 420px
 </style>

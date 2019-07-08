@@ -25,6 +25,7 @@ function catalog (level) {
             list.push(nav)
     }
 
+    console.log(list)
     return list
 }
 </script>
