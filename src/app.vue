@@ -7,7 +7,7 @@
         FullSlider
         MiniCart
 
-    Preloader( v-else )
+    Preloader( v-else @ready='start' )
 
 </template>
 
@@ -19,9 +19,9 @@ import MiniCart from '@/components/Cart/Mini.vue'
 import FullSlider from '@/components/Item/FullSlider.vue'
 
 export default {
-    created: init,
     components: { HeaderComponent, Preloader, ItemPreview, FullSlider, MiniCart },
     computed: { scrollable },
+    methods: { start },
     data: function () {
         return {
             ready: false
@@ -29,54 +29,14 @@ export default {
     }
 }
 
-// Created function and them helpers
-function init () {
-    setTimeout(async () => {
-        var catalog = await getCatalog()
-        var items = await getItems()
-
-        this.$store.commit('set-catalog', catalog)
-        this.$store.commit('set-items', items)
-
-        this.ready = true
-    }, 2000)
-}
-
-function ajax (method, handler) {
-    return new Promise(function (resolve, reject) {
-        var request = new XMLHttpRequest()
-
-        request.open('GET', `http://95.167.9.22:8081/${method}`, true)
-        request.send()
-
-        return handler.call(request, resolve, reject)
-    })
-}
-
-function handle (request, resolve, reject) {
-    request.addEventListener('readystatechange', event => {
-        if (request.readyState === 4 && request.status === 200) {
-            var json = JSON.parse(request.responseText)
-            resolve(json.data)
-        }
-    })
-}
-
-function getCatalog () {
-    return ajax('catalog/list', function (resolve, reject) {
-        handle(this, resolve, reject)        
-    })
-}
-
-function getItems () {
-    return ajax('item/list?shop=000000001', function (resolve, reject) {
-        handle(this, resolve, reject)
-    })
-}
-
 // Computed
 function scrollable () {
     return this.$store.state.scrollable
+}
+
+// Methods
+function start () {
+    this.ready = true
 }
 </script>
 
