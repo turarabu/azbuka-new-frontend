@@ -1,8 +1,25 @@
 <template lang="pug">
     div#filter( :class='{ show }' )
-        div( class='line' )
+        div( class='filter-row' )
             h3( class='title' ) Цена
-            FilterRange( min=0 max=500000 @changed='changed' name='price' )
+            FilterRange( min=0 max=500000 @changed='changed' name='prices' )
+
+        div( class='filter-row' v-for='filter in catalog.filters')
+            h3( class='title' ) {{ filter.name }}
+            FilterRange(
+                v-if='filter.type === "range"'
+                :name='filter.prop'
+                :min='filter.min'
+                :max='filter.max'
+                @changed='changed' )
+
+            FilterOptions(
+                v-if='filter.type === "select"'
+                :name='filter.prop'
+                :namee='filter.prop'
+                :options='filter.options'
+                @changed='changed' 
+            )
 
         button( class='apply' @click='applyFilter' ) Показать товары
 
@@ -10,16 +27,18 @@
 
 <script>
 import FilterRange from '@/components/Filter/Range.vue'
+import FilterOptions from '@/components/Filter/Options.vue'
 
 export default {
     props: ['catalog'],
     computed: { show },
-    components: { FilterRange },
-    methods: { changed, applyFilter },
+    components: { FilterRange, FilterOptions },
+    methods: { changed, selected, applyFilter },
     updated: function (...args) {
         console.log(...args)
     },
     data: function () {
+        console.log(this.catalog)
         return {
             list: {}
         }
@@ -33,7 +52,12 @@ function show () {
 
 // Methods
 function changed (data) {
+    console.log(data)
     this.list[ data.name ] = data
+}
+
+function selected (data) {
+
 }
 
 function applyFilter () {
@@ -67,6 +91,9 @@ function applyFilter () {
         opacity 1
         right 36px
         transition .3s step-end all
+
+    .filter-row
+        margin-bottom 42px
 
     .apply
         background $red

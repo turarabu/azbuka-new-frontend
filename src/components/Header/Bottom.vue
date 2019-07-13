@@ -11,8 +11,8 @@
                     span( class='crumb' v-for='(crumb, index) in crumbs' :key='index' )
                         i( class='icon icon-arrow-right' ) →
                         router-link( class='link' :to='`/${ crumb.type }/${ crumb.id }`' ) {{ crumb.name }}
-
-            div( class='right' v-if='last.level === 2' )
+            
+            div( class='right' v-if='last.showItems === true' )
                 i( class='icon icon-search' )
                 input( class='search' placeholder='Поиск' v-model='search' )
 
@@ -83,6 +83,7 @@ function init () {
 // Methods
 function update () {
     this.updateBreadCrumbs()
+    console.log('updated', this.last)
 }
 
 function goBack () {
@@ -131,6 +132,7 @@ function getCatalog (id, state) {
         if (catalog.id == id)
             return {
                 type: 'catalog',
+                showItems: catalog.showItems,
                 collection: catalog.isCollection,
                 parent: catalog.parentId,
                 level: catalog.level,

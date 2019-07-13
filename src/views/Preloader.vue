@@ -51,15 +51,17 @@ async function download () {
     var catalog = await this.getCatalog()
     var items = await this.getItems()
 
-    this.$store.commit('set-catalog', catalog)
-    this.$store.commit('set-items', items)
-
     this.load = 100
     this.comment = 'Почти готово...'
 
     setTimeout(() => {
+        var filteredCatalog = sortCatalog(sortItems(catalog, items), items)
+
+        this.$store.commit('set-catalog', filteredCatalog)
+        this.$store.commit('set-items', items)
+
         this.$emit('ready', true)
-    }, 500)
+    }, 10)
 }
 
 function getCatalog () {
@@ -84,6 +86,84 @@ function getItems () {
 }
 
 // Helper functions
+function sortItems (catalog, items) {
+    for (let c of catalog) {
+        c.items = []
+        for (let i of items) {
+            if (i.parentId == c.id)
+                c.items.push(i)
+        }
+    }
+
+    return catalog
+}
+
+function sortCatalog (catalog) {
+    for (let c of catalog) {
+        c.filters = c.filters || []
+        if (c.filters.length === 0 || c.filters.items === 0)
+            continue
+        
+        else c.filters = sortFilters(c)
+    }
+
+    return catalog
+}
+
+function sortFilters (catalog) {
+    var list = []
+    var props = sortProps(catalog.items)
+
+    for (let filter of catalog.filters) {
+        if (props[filter.prop] === undefined)
+            continue
+        
+        else {
+            let values = getValues(props[filter.prop])
+
+            if (filter.type === 'range') {
+                filter.max = Math.max(...values)
+                filter.min = Math.min(...values)
+            }
+
+            else if (filter.type === 'select')
+                filter.options = values
+
+            list.push(filter)
+        }
+    }
+
+    return list
+}
+
+function sortProps (items) {
+    var props = {}
+
+    for (let i of items) {
+        for (let p of i.properties) {
+            for (let c of p.childs) {
+                if (props[c.id] === undefined)
+                    props[c.id] = [c]
+
+                else props[c.id].push(c)
+            }
+        }
+    }
+
+    return props
+}
+
+function getValues (prop) {
+    var values = []
+
+    for (let item of prop) {
+        if (values.includes(item.value) === false)
+            values.push(item.value)
+    }
+    
+    return values
+}
+
 function ajax (method, callback) {
     var request = new XMLHttpRequest()
 

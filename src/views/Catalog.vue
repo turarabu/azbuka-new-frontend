@@ -1,7 +1,7 @@
 <template lang="pug">
     div#catalog
-        span( class='id' ) {{ id }}
-        CatalogItems( v-if='getNav.level > 1' :parent='getNav' )
+        span( class='id' ) {{ getNav.level }}
+        CatalogItems( v-if='getNav.showItems === true' :parent='getNav' )
         CatalogChilds( v-else :parent='getNav' )
 
 </template>
@@ -15,7 +15,7 @@ export default {
     components: { CatalogItems, CatalogChilds },
     computed: { getNav },
     updated: function () {
-        // console.log(this.id)
+        console.log(this.getNav)
     }
 }
 

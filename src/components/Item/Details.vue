@@ -18,6 +18,7 @@ export default {
     props: ['item'],
     components: { ItemBuy, ItemSpecs },
     data: function () {
+        console.log(this.item)
         return {
             tab: 0
         }

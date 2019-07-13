@@ -29,9 +29,9 @@ export default {
     data: function () {
         return {
             hide: false,
-            hasDiscount: hasDiscount(this.item),
-            maxPrice: toReadablePrice( maxPrice(this.item) ),
-            minPrice: toReadablePrice( minPrice(this.item) )
+            hasDiscount: this.item.prices.max !== this.item.prices.max,
+            maxPrice: toReadablePrice( this.item.prices.max ),
+            minPrice: toReadablePrice( this.item.prices.min )
         }
     }
 }
@@ -61,56 +61,21 @@ function openPreview () {
     this.$store.commit('item-preview', this.item)
 }
 
-// Data functions
-function hasDiscount (item) {
-    for (let spec of item.specs) {
-        for (let option of spec.options) {
-            if (option.prices.discounts.length > 0)
-                return true
-        }
-    }
-
-    return false
-}
-
-function maxPrice (item) {
-    var prices = []
-
-    for (let spec of item.specs) {
-        for (let option of spec.options)
-            prices.push(option.prices.current)
-    }
-
-    return Math.max(...prices)
-}
-
-function minPrice (item) {
-    var prices = []
-
-    for (let spec of item.specs) {
-        for (let option of spec.options) {
-            let current = option.prices.current
-            let discounts = option.prices.discounts
-
-            prices.push( ...calcDiscounts(current, discounts) )
-        }
-    }
-    
-    return Math.min(...prices)
-}
-
 // Help functions
 function getProp (prop, item) {
-    var keys = prop.split('.')
+    var propsList = []
 
-    if (prop === 'price') {
-        return minPrice(this.item)
+    if (prop === 'prices')
+        return item.prices.min
+
+    for (let p of item.properties) {
+        for (let c of p.childs) {
+            if (c.id === prop) 
+                return c.value
+        }
     }
 
-    for (let key of keys)
-        item = item[key]
-
-    return item
+    return ''
 }
 
 function findValue (key, data) {
@@ -119,21 +84,12 @@ function findValue (key, data) {
             return key.toLowerCase().search(data.value.toLowerCase()) >= 0
         case 'range':
             return key >= data.value.min && key <= data.value.max
-        case 'exact':
-            return key == data.value
+        case 'select':
+            console.log(data, key)
+            return data.value.length === 0 || data.value.includes(key)
     }
     
     return true
-}
-
-function calcDiscounts (base, discounts) {
-    var result = [base]
-
-    for (let dis of discounts)
-        result.push( base * ((100 - dis.discount) / 100) )
-
-    return result
-    
 }
 
 function toReadablePrice (price) {
