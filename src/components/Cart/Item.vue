@@ -1,26 +1,31 @@
 <template lang="pug">
-    tr( class='cart-item' :class='{ hide }' )
-        td( class='image image-div border' )
-            img( class='image' :src='item.poster' )
-        
-        td( class='name border' )
-            span( class='bold' ) {{ item.source.name }}
-            span( class='spec' ) {{ item.source.specs[0].name }}: {{ options[item.option].name }}
 
-        td( class='count border' ) {{ item.count }} {{ item.source.unit }}
-        td( class='price border' ) {{ item.source.prices.mins[item.option] }} руб
-        td( class='build border' ) {{ item.source.build ? 'Да' : 'Не требуется' }}
-        td( class='total border' ) {{ item.total }} руб
-        td( class='actions border' )
+    div( class='cart-item row' )
+        div( class='image data' )
+            div( class='image-div' )
+                img( class='image' :src='item.poster' )
+
+        div( class='name data' )
+            h3( class='name-text' ) {{ item.source.name }}
+            p( class='selected-option' ) {{ spec.name }}: {{ spec.options[item.option].name }}
+        div( class='count data' ) {{ item.count }} {{ item.source.unit }}
+        div( class='price data' ) {{ price.toLocaleString("ru-RU") }} руб
+        div( class='build data' ) {{ item.source.build ? 'Да' : 'Не требуется' }}
+        div( class='total data' ) {{ item.total.toLocaleString("ru-RU") }} руб
+        div( class='actions' ) 
             i( class='icon icon-trash' @click='$emit("remove", index)' )
+
 </template>
 
 <script>
 export default {
     props: ['item', 'index'],
     data: function () {
+        var item = this.item.source
+        
         return {
-            options: this.item.source.specs[0].options,
+            spec: item.specs[0],
+            price: item.prices.mins[this.item.option],
             hide: false
         }
     }
@@ -42,27 +47,30 @@ export default {
         align-items center
         display flex
         justify-content center
-        height 256px
-        width 256px
+        height 180px
+        width 100%
 
         .image
             max-height  100%
             max-width 100%
 
-    .bold
+    .name-text
         display block
         font-size 18px
         font-weight 500
-        margin 4px 0
+        margin 6px 0
 
-    .spec
+    .selected-option
         color lighten($dark-gray, 15)
         font-size 16px
 
-    .count, .price, .build, .total
+    .data
         font-size 18px
         font-weight 500
         text-align center
+
+    .name
+        text-align left
 
     .icon-trash
         color $red

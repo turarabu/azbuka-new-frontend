@@ -9,13 +9,13 @@ export function Store () {
         mutations: {
             'set-catalog': setCatalog,
             'set-items': setItems,
-            'set-filters': setFilters,
             'item-preview': itemPreview,
             'full-slider': fullSlider,
             'to-cart': toCart,
             'set-cart': setCart,
-            'delete': deleteFromCart,
+            'remove-cart': deleteFromCart,
             'set-search': setSearch,
+            'clear-search': clearSearch,
             'switch-filter': switchFilter
         }
     })
@@ -38,10 +38,6 @@ function state () {
 function setCatalog (state, data) {
     state.catalog = data
     window.catalog = data
-}
-
-function setFilters (state, data) {
-    state.filters = data
 }
 
 function setItems (state, data) {
@@ -75,6 +71,10 @@ function deleteFromCart (state, id) {
 
 function setSearch (state, search) {
     state.search[ search.prop ] = search.value
+}
+
+function clearSearch (state) {
+    state.search = []    
 }
 
 function switchFilter (state) {

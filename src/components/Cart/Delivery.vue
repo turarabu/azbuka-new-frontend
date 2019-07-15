@@ -12,7 +12,12 @@
                     TextInput( label='Дом' v-model='address.building' placeholder='Например: 37' )
                     TextInput( label='Квартира' v-model='address.home' placeholder='Например: 2' )
                     TextInput( label='Домофон' v-model='address.dphone' placeholder='Номер если есть' )
-                    RadioInput( name='lift' :options='address.lift.options' v-model='address.lift.selected' )
+                    div( v-if='delivery.selected > 1' name='lift' )
+                        br
+                        span( class='lift-label-text' ) Лифт
+                        RadioInput(
+                            v-model='address.lift.selected'
+                            :options='address.lift.options' )
 
         div( class='delivery-column' v-if='delivery.selected > 0' )
             h3( class='step-title' ) Доставка
@@ -23,10 +28,12 @@
 
         div( class='delivery-column' v-if='delivery.selected > 0' )
             h3( class='step-title' ) Сборка
-            RadioInput( :options='build.options' v-model='build.date' )
-            p( class='row-text' )
-                 span( class='label-text' ) Стоимость сборки
-                 span( class='text' ) 2432 рублей
+            RadioInput( :options='build.options' v-model='build.selected' )
+            div( v-if='build.selected > 0' )
+                SelectInput( label='Дата доставки' :options='delivery.availableDates' v-model='delivery.date' )
+                p( class='row-text' )
+                    span( class='label-text' ) Стоимость сборки
+                    span( class='text' ) 2432 рублей
 
                 
 </template>
@@ -43,8 +50,10 @@ export default {
         return {
             build: {
                 include: 0,
+                selected: 0,
                 date: 0,
-                options: ['Добавить сборку', 'Без сборки']
+                dates: ['17 Июля', '18 Июля', '18 Июля', '19 Июля', '18 Июля'],
+                options: ['Без сборки', 'Добавить сборку']
             },
 
             delivery: {
@@ -79,7 +88,16 @@ export default {
 .cart-delivery-div
     align-items top
     display grid
-    grid-template-columns 480px 480px 480px
-    justify-content space-around
+    grid-template-columns 300px 300px 300px
+    justify-content center
     margin 64px 0
+    padding-left 136px
+
+    .column-title
+        margin-top 16px
+
+    .lift-label-text
+        display block
+        font-size 18px
+        margin 6px 2px
 </style>

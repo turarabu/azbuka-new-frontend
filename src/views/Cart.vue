@@ -1,19 +1,24 @@
 <template lang="pug">
     div#cart( class='block' )
-        h3( class='title' )
-            i( class='icon icon-piggy-bank' )
-            span Мои покупки
+        div( v-if='cart.length === 0' class='empty-cart' )
+            img( class='image' src='/images/empty-cart.png' )
+            h3( class='empty-text' ) Ваша корзина пуста
 
-        div( class='steps-div' )
-            span( class='step' :class='{active: step > 0}' ) Список товаров
-            span( class='step' :class='{active: step > 1}' ) Сборка и доставка
-            span( class='step' :class='{active: step > 2}' ) Контакты
-            span( class='step' :class='{active: step > 3}' ) Бонусная карта
+        div( v-else )
+            h3( class='title' )
+                i( class='icon icon-piggy-bank' )
+                span Мои покупки
+                
+            div( class='steps-div' )
+                span( class='step' :class='{active: step > 0}' ) Список товаров
+                span( class='step' :class='{active: step > 1}' ) Сборка и доставка
+                span( class='step' :class='{active: step > 2}' ) Контакты
+                span( class='step' :class='{active: step > 3}' ) Бонусная карта
 
-        ItemsList( v-if='step == 1' :cart='cart' )
-        ItemsDelivery( v-if='step == 2' :cart='cart' )
-        
-        CartContinue( :step='step' )
+            ItemsList( v-if='step == 1' :cart='cart' )
+            ItemsDelivery( v-if='step == 2' :cart='cart' )
+            
+            CartContinue( :step='step' )
 </template>
 
 <script>
@@ -40,6 +45,20 @@ function cart () {
 @import '~@/style/palette'
 
 #cart
+
+    .empty-cart
+        flex-direction column
+        height 500px
+        padding-top 32px
+        text-align center
+
+        .empty-text
+            color $red
+            font-size 24px
+            font-weight 400
+            margin 6px 0
+            position relative
+            left -4px
 
     .title
         align-items center

@@ -21,10 +21,21 @@ function input () {
 </script>
 
 <style lang="stylus">
+@import '~@/style/palette'
+
 .input-label
     display block
     margin 6px 0
 
     .label-text
         display block
+        font-size 18px
+        margin 6px 2px 6px 16px
+
+    .input
+        border 1px solid lighten($dark-gray, 15)
+        border-radius 25px
+        font-size 16px
+        padding 6px 16px
+        outline none
 </style>

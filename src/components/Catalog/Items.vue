@@ -34,8 +34,6 @@ export default {
     computed: { search },
     mounted: init,
     data: function () {
-        console.log('collections', this.catalog)
-
         this.$nextTick(() => {
             if ( Object.values(this.search).length > 0 )
                 this.filtered = help.filter.items(this.items, Object.values(this.search))

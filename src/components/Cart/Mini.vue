@@ -1,5 +1,5 @@
 <template lang="pug">
-    div#mini-cart( :class='{show: scrollTop >= 1250}' )
+    div#mini-cart( v-if='route.name !== "cart"' :class='{show: scrollTop >= 1250}' )
         div( class='cart' )
             div( class='item' :class='{toCart, hide}' v-if='add !== false' )
                 div( class='image-div' )
@@ -11,7 +11,7 @@
             
             router-link( tag='div' v-else to='/cart/1' )
                 p( class='count' ) В корзине {{ cart.length }} {{ countText }}
-                p( class='total' ) На сумму {{ cartCount() }} руб
+                p( class='total' ) На сумму {{ cartCount().toLocaleString('ru-RU') }} руб
 
             span( class='cart-button' )
                 i( class='icon icon-cart' )
@@ -30,7 +30,8 @@ export default {
             add: false,
             hide: false,
             toCart: false,
-            scrollTop: 0
+            scrollTop: 0,
+            route: this.$router.currentRoute
         }
     }
 }
@@ -92,6 +93,11 @@ function init () {
     var app = document.querySelector('#app')
     var events = ['to-cart', 'set-cart']
 
+    this.$router.afterEach(() => {
+        this.route = this.$router.currentRoute
+        this.$store.commit('clear-search')
+    })
+
     this.$store.subscribe(mutation => {
         if ( events.includes(mutation.type) === true )
             this.addCart(mutation.payload.item || mutation.payload)
@@ -136,6 +142,7 @@ function init () {
         top -100px
         height 92px
         width 100%
+        z-index 11
         &.toCart
             top 0
         &.hide
@@ -185,6 +192,7 @@ function init () {
         right 0
         height 92px
         width 92px
+        z-index 10
 
     .to-top
         align-items center

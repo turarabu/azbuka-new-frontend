@@ -2,10 +2,10 @@
     div( class='to-next-step' )
         p( class='row' )
             span( class='key' ) Стоимость товаров:
-            span( class='value' ) {{ total }} руб
+            span( class='value' ) {{ total.toLocaleString('ru-RU') }} руб
 
         p( class='row' )
-            span( class='key' ) Сборка:
+            span( class='key' ) Доставка и сборка:
             span( class='value' ) {{ build }} руб
 
         p( class='row' )
@@ -14,7 +14,7 @@
 
         p( class='row' )
             span( class='key' ) Итого к оплате:
-            span( class='value' ) {{ endTotal }} руб
+            span( class='value' ) {{ (total + build).toLocaleString('ru-RU') }} руб
 
         p( class='row' )
             button( class='next' @click='next' ) Далее
@@ -22,13 +22,25 @@
 
 <script>
 export default {
-    props: ['total', 'build', 'discount', 'step'],
-    computed: { endTotal },
+    props: ['step'],
+    computed: { total, build, discount },
     methods: { next }
 }
 
-function endTotal () {
-    return this.total + this.build + this.discount
+function total () {
+    var total = 0
+    for ( let item of this.$store.state.cart )
+        total += item.count * item.total
+
+    return total
+}
+
+function build () {
+    return 0
+}
+
+function discount () {
+    return 0
 }
 
 // Methods

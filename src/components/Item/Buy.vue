@@ -32,7 +32,8 @@ export default {
 // Methods
 function toCart () {
     var cart = this.$store.state.cart
-    
+    var optionsList = this.item.specs[this.option].options
+
     for ( let index in cart ) {
         let item = cart[index]
 
@@ -45,12 +46,13 @@ function toCart () {
         }
     }
 
-    return this.add()
+    if ( optionsList[this.option].left > 0 )
+        return this.add()
 }
 
 function check (item) {
     var optionsList = this.item.specs[this.option].options
-
+    
     if ( optionsList[this.option].left === 0 )
         return false
 
