@@ -1,8 +1,7 @@
 <template lang="pug">
     div#catalog
-        span( class='id' ) {{ getNav.level }}
-        CatalogItems( v-if='getNav.showItems === true' :parent='getNav' )
-        CatalogChilds( v-else :parent='getNav' )
+        CatalogItems( v-if='showItems' :catalog='catalog' :key='catalog.id' )
+        CatalogChilds( v-else :catalog='catalog' )
 
 </template>
 
@@ -13,18 +12,23 @@ import CatalogChilds from '@/components/Catalog/Childs.vue'
 export default {
     props: ['id'],
     components: { CatalogItems, CatalogChilds },
-    computed: { getNav },
+    computed: { catalog, showItems },
     updated: function () {
-        console.log(this.getNav)
+        console.log(this.catalog)
     }
 }
 
 // Computed
-function getNav () {
-    for (let nav of this.$store.state.catalog) {
-        if (this.id === nav.id)
-            return nav
+function catalog () {
+    for (let catalog of this.$store.state.catalog) {
+        if (this.id === catalog.id)
+            return catalog
     }
+}
+
+function showItems () {
+    var catalog = this.catalog
+    return catalog && catalog.showItems === true || catalog.isCollection === true
 }
 </script>
 

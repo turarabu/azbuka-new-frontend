@@ -59,8 +59,10 @@ function search () {
             this.$store.commit('set-search', {
                 prop: 'name',
                 value: {
+                    key: 'root',
+                    prop: 'name',
                     type: 'search',
-                    value: value
+                    text: value
                 }
             })
         }
@@ -181,7 +183,7 @@ function getParents (crumbs, state) {
         padding 8px 16px
 
     .bread-crumbs-div
-        align-items center
+        align-items flex-start
         display flex
         font-size 18px
         margin 0 24px
@@ -194,6 +196,7 @@ function getParents (crumbs, state) {
 
         .crumb
             display inline-block
+            max-width 500px
 
             .link
                 color $black

@@ -1,196 +1,191 @@
 <template lang="pug">
-    div( class='range' )
-        div( class='input-container' )
-            input( class='range-input' v-model='value.min' @keyup='checkout("min", $event)' )
-            span( class='delimiter' ) —
-            input( class='range-input' v-model='value.max' @keyup='checkout("max", $event)' )
+    div( class='double-range-div' )
+        div( class='inputs-div' )
+            input( class='input' v-model='num.min' @input='update("pers")' )
+            span( class='delimiter' )
+            input( class='input' v-model='num.max' @input='update("pers")' )
 
-        div( class='line' )
-            div( class='line-container' )
-                div( class='selected' :style='{left: `calc(${left.min}% - 8px)`, right: `calc(100% - ${left.max}% - 32px)`}' )
-                span( class='point'
-                    :style='{left: `calc(${left.min}% - 16px)`}'
-                    @mousedown='allow = "min"'
-                )
-
-                span( class='point'
-                    :style='{left: `calc(${left.max}% + 16px)`}'
-                    @mousedown='allow = "max"'
-                )
+        div( class='double-range' )
+            div( class='selected-range' :style='{left: `${ per.min }%`, right: `${ 100 - per.max }%`}' )
+                span( class='point min' @mousedown='active = "min"' )
+                span( class='point max' @mousedown='active = "max"' )
 </template>
 
 <script>
-import { release } from 'os';
 export default {
-    props: [ 'min', 'max', 'change', 'name' ],
+    props: ['value'],
+    methods: { update },
     mounted: init,
-    methods: { checkout, rerange, update },
     data: function () {
         return {
-            allow: false,
-            value: {
-                max: this.max,
-                min: this.min
+            active: false,
+            num: {
+                max: this.value.max,
+                min: this.value.min
             },
 
-            left: {
+            per: {
                 max: 100,
                 min: 0
             }
-        };
+        }
     }
 }
 
 function init () {
-    var self = this;
+    var last
+    var range = this.$el
 
-    document.addEventListener('mousemove', function (...data) {
-        move.call(self, ...data)
-    });
+    document.addEventListener('mouseup', () => { this.active = false })
+    document.addEventListener('mousedown', event => { last = event })
+    document.addEventListener('mousemove', event => {
+        if ( this.active === false )
+            return
 
-    document.addEventListener('mouseup', function () {
-        self.allow = false;
-    });
-}
+        var move = event.screenX - last.screenX
+        var percent = 100 / (range.offsetWidth - 67) * move
 
-function checkout (type, event) {
-    if ( type === 'min' ) {
-        if( parseInt(this.value.min) > parseInt(this.value.max) )
-            this.value.min = parseInt(this.value.max);
-        else this.value.min = Math.max(0, this.value.min) || 0;
-    }
+        if ( this.active === 'min' ) {
+            let check = this.per.min + percent
+            if ( check >= 0 && check <= this.per.max ) {
+                this.per.min = check
+                last = event
+            }
 
-    else if (type === 'max') {
-        if( parseInt(this.value.max) < parseInt(this.value.min) )
-            this.value.max = parseInt(this.value.min);
-        else this.value.max = parseInt(this.value.max);
-    }
-
-    this.rerange('value');
-    this.update();
-}
-
-function rerange (type) {
-    if (type === 'value')
-        this.left = {
-            max: Math.min(100, 100 * this.value.max / this.max),
-            min: Math.max(0, 100 * this.value.min / this.max)
-        };
-    
-    else this.value = {
-        max: parseInt(this.left.max * this.max / 100),
-        min: parseInt(this.left.min * this.max / 100)
-    };
-}
-
-function move (event) {
-    if ( this.allow === false )
-        return;
-
-    var mouse = relative.call(this, event);
-    var calc = percent.call(this, mouse);
-
-    if (this.allow === 'min') {
-        if( calc < this.left.max )
-            this.left.min = calc;
-        else this.left.min = this.left.max;
-    }
-
-    else if (this.allow === 'max') {
-        if ( calc > this.left.min )
-            this.left.max = calc;
-        else this.left.max = this.left.min;
-    }
-
-    this.rerange();
-    this.update();
-}
-
-function relative (event) {
-    var offset = 0;
-    var el = this.$el;
-
-    if (el.offsetParent) {
-        do offset += el.offsetLeft;
-        while (el = el.offsetParent);
-    }
-
-    return event.clientX - offset;
-}
-
-function percent (mouse) {
-    var diff = this.allow === 'min' ? 0 : -15;
-    return mouse > this.$el.offsetWidth + diff
-        ? 100 : mouse < 0
-            ? 0
-            : 100 / (this.$el.offsetWidth + diff) * mouse;
-
-}
-
-function update () {
-    return this.$emit('changed', {
-        type: 'range',
-        name: this.name,
-        value: {
-            min: this.value.min,
-            max: this.value.max
+            else this.per.min = Math.min(this.per.max, Math.max(0, check))
         }
-    });
+
+        else if ( this.active === 'max' ) {
+            let check = this.per.max + percent
+            if ( check <= 100 && check >= this.per.min ) {
+                this.per.max = check
+                last = event
+            }
+
+            else this.per.max = Math.max(this.per.min, Math.min(100, check))
+        }
+
+        return this.update("nums")
+    })
+}
+
+function update (type) {
+    if ( type === 'nums' )
+        updateNums.call(this)
+    else if ( type === 'pers' )
+        updatePers.call(this)
+
+    return this.$emit('input', clones(this.value, this.num))
+}
+
+function updateNums () {
+    var inequality = this.value.max - this.value.min
+
+    return this.num = {
+        max: parseInt((inequality * this.per.max / 100) + this.value.min),
+        min: parseInt((inequality * this.per.min / 100) + this.value.min)
+    }
+}
+
+function updatePers () {
+    var inequality = 100 / (this.value.max - this.value.min)
+
+    return this.per = {
+        max: Math.max(this.per.min, Math.min(100, inequality * (this.num.max - this.value.min))),
+        min: Math.min(this.per.max, Math.max(0, inequality * (this.num.min - this.value.min))),
+    }
+}
+
+function clones (...objs) {
+    var list = []
+
+    for ( let obj of objs )
+        list.push(JSON.parse( JSON.stringify(obj) ))
+
+    return Object.assign({}, ...list)
 }
 </script>
 
 <style lang="stylus">
 @import '~@/style/palette'
 
-.range
+.double-range-div
     display block
-    margin 16px 0
+    margin 12px 0
+    width 100%
 
-    .range-input
-        border 1px solid $black
-        border-radius 50px
-        font-size 16px
-        outline none
-        padding 8px 16px
-        text-align center
-        width calc(50% - 60px)
-
-    .input-container
+    .inputs-div
         align-items center
         display flex
         justify-content space-between
+        margin-bottom 18px
+
+        .input
+            border 1px solid lighten($dark-gray, 15)
+            border-radius 25px
+            font-size 18px
+            outline none
+            padding 8px 4px
+            text-align center
+            width 120px
 
         .delimiter
-            font-weight bolder
+            background $black
+            display inline-block
+            height 1px
+            width 20px
 
-    .line
+    .double-range
         background $red
-        border-radius 15px
-        margin 24px 0 8px 0
-        position relative
-        height 10px
-
-    .line-container
-        position absolute
-        left 19px
-        right 49px
-        height 100%
-
-    .selected
-        background $white
-        border-radius inherit
-        transition none
-        position absolute
-        top 1px
         height 8px
+        margin 0 auto
+        position relative
+        width calc(100% - 70px)
+        &:before, &:after
+            background $red
+            content ''
+            display block
+            position absolute
+            top 0
+            bottom 0
+            width 35px
+        &:before
+            border-radius 8px 0 0 8px
+            left -35px
+        &:after
+            border-radius 0 8px 8px 0
+            right -35px
 
-    .point
-        background $red
-        border-radius 50%
-        cursor pointer
-        transition none
-        position absolute
-        top -10px
-        height 30px
-        width 30px
+        .selected-range
+            background $white
+            transition none
+            position absolute
+            top 1px
+            bottom 1px
+            &:before, &:after
+                background $white
+                content ''
+                display block
+                position absolute
+                top 0
+                bottom 0
+                width 15px
+                z-index 3
+            &:before
+                left -10px
+            &:after
+                right -10px
+
+            .point
+                background $red
+                border-radius 50%
+                height 30px
+                width 30px
+                position absolute
+                top -12px
+                z-index 4
+                &.min
+                    left -32px
+                &.max
+                    right -32px
 </style>

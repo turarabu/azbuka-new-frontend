@@ -1,0 +1,152 @@
+<template lang="pug">
+    div( class='items-left-block' )
+        h3( class='title' ) Остатки
+
+        div( class='count-div' )
+            div( class='selected-count' :style='{width: `${ count + 1 }%`}' )
+
+        span( v-if='left === 0 || selected.warehouses.length === 0' class='empty' ) Нет в наличии
+        div( v-else class='lefts-in-shop-div' )
+            div( class='lefts-in-shop' )
+                span( class='lefts-in-shop-title' ) В наличии на складах
+                i( class='icon icon-map-marker' )
+                select( class='lefts-in-shop-select' )
+                    option( v-for='warehouse in selected.warehouses' ) {{ warehouse }}
+
+            div( class='lefts-in-shop' )
+                span( class='lefts-in-shop-title' ) Количество
+                span( class='left-count' ) {{ left }} {{ item.unit }}
+
+        h3( class='title' ) Укажите количество
+        div( class='set-count-div' )
+            span( class='set-count' @click='setCount("sub")' ) –
+            span( class='count' ) {{ count }}
+            span( class='set-count' @click='setCount("add")' ) +
+            
+</template>
+
+<script>
+export default {
+    props: ['item', 'option', 'value'],
+    computed: { left, selected },
+    methods: { setCount },
+    mounted: init,
+    data: function () {
+        return {
+            count: this.value
+        }
+    }
+}
+
+function init () {
+    if ( this.value > this.left ) {
+        this.count = this.left
+        this.$emit('input', this.left)
+    }
+}
+
+// Computed
+function left () {
+    var options = this.item.specs[0].options
+    return options[this.option].left
+}
+
+function selected () {
+    return this.item.specs[0].options[this.option]
+}
+
+// Methods
+function setCount (type) {
+    if ( type === 'sub' )
+        this.count = Math.max(this.count - 1, Math.min(1, this.left))
+
+    else if ( type === 'add' )
+        this.count = Math.min(this.count + 1, this.left)
+
+    return this.$emit('input', this.count)
+}
+</script>
+
+<style lang="stylus">
+@import '~@/style/palette'
+
+.items-left-block
+
+    .title
+        margin 8px 0
+
+    .count-div
+        background transparent
+        border 1px solid $red
+        border-radius 8px
+        overflow hidden
+        position relative
+        height 8px
+        width 500px
+
+        .selected-count
+            background $red
+            border-radius 0 8px 8px 0
+            height 100%
+            position absolute
+            left 0
+
+    .empty
+        color lighten($dark-gray, 5)
+        display block
+        font-size 18px
+        margin 8px 0 16px 0
+
+    .lefts-in-shop-div
+        align-items top
+        display flex
+        justify-content space-between
+        margin 12px 0
+        width 490px
+
+        .lefts-in-shop-title
+            display block
+            color lighten($dark-gray, 15)
+            font-size 16px
+            font-weight 500
+            margin-bottom 2px
+
+        .icon
+            color $red
+            font-size 18px
+            position relative
+            left -2px
+            top 2px
+            margin-right -24px
+            width 24px
+
+        .lefts-in-shop-select
+            appearance none
+            background transparent
+            border none
+            font-size 16px
+            padding 6px 8px 6px 24px
+            position relative
+            width 200px
+
+        .left-count
+            font-size 16px
+            font-weight 600
+
+    .set-count-div
+        align-items center
+        display flex
+        justify-content space-between
+        width 225px
+
+        .set-count
+            align-items center
+            border 1px solid
+            border-radius 25px
+            display flex
+            font-size 20px
+            font-weight 600
+            justify-content center
+            height 35px
+            width 80px
+</style>

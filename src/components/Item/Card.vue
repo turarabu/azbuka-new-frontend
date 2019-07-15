@@ -1,7 +1,7 @@
 <template lang="pug">
-    div( class='item-card' :class='{hide}' )
+    div( class='item-card' )
         div( class='image-div' @click='openPreview' )
-            img( class='image' :src='`/images/dynamic/${ item.headImage }.jpg`' onerror='this.onerror = null; this.src = "/images/not-found.png"' )
+            img( class='image' :src='poster' onerror='this.onerror = null; this.src = "/images/not-found.png"' )
         
         router-link( tag='div' class='meta' :to='`/item/${ item.id }`' :linkto='`/item/${ item.id }`' )
             p( class='name' ) {{ item.name }}
@@ -25,14 +25,13 @@ export default {
     props: ['item'],
     computed: { search },
     methods: { openPreview },
-    mounted: init,
     data: function () {
-        return {
-            hide: false,
-            hasDiscount: this.item.prices.max !== this.item.prices.max,
-            maxPrice: toReadablePrice( this.item.prices.max ),
-            minPrice: toReadablePrice( this.item.prices.min )
-        }
+        return Object.assign(this.item, {
+            poster: `/images/dynamic/${ this.item.headImage }.jpg`,
+            hasDiscount: Math.max( this.item.prices.discounts ) > 0,
+            maxPrice: toReadablePrice( Math.max(...this.item.prices.maxs) ),
+            minPrice: toReadablePrice( Math.min(...this.item.prices.mins) )
+        })
     }
 }
 
@@ -41,57 +40,12 @@ function search () {
     return this.$store.state.search
 }
 
-// Mounted
-function init () {
-    var list = Object.keys(this.search)
-
-    for (let key of list) {
-        let value = this.search[key]
-        let prop = getProp.call(this, key, this.item)
-
-        if (findValue(prop, value) === false) {
-            this.hide = true
-            return this.$emit('exclude', true)
-        }
-    }
-}
-
 // Methods
 function openPreview () {
     this.$store.commit('item-preview', this.item)
 }
 
 // Help functions
-function getProp (prop, item) {
-    var propsList = []
-
-    if (prop === 'prices')
-        return item.prices.min
-
-    for (let p of item.properties) {
-        for (let c of p.childs) {
-            if (c.id === prop) 
-                return c.value
-        }
-    }
-
-    return ''
-}
-
-function findValue (key, data) {
-    switch (data.type) {
-        case 'search':
-            return key.toLowerCase().search(data.value.toLowerCase()) >= 0
-        case 'range':
-            return key >= data.value.min && key <= data.value.max
-        case 'select':
-            console.log(data, key)
-            return data.value.length === 0 || data.value.includes(key)
-    }
-    
-    return true
-}
-
 function toReadablePrice (price) {
     price = parseInt(price)
     price = price.toLocaleString('ru-RU')
@@ -125,6 +79,7 @@ function toReadablePrice (price) {
         font-weight 500
         height 72px
         padding 0 16px
+        word-break break-all
 
     .price-text
         color lighten($dark-gray, 5)

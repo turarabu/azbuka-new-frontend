@@ -1,71 +1,29 @@
 <template lang="pug">
     tr( class='cart-item' :class='{ hide }' )
         td( class='image image-div border' )
-            img( class='image' :src='`/images/dynamic/${ item.item.headImage }.jpg`' )
+            img( class='image' :src='item.poster' )
         
         td( class='name border' )
-            span( class='bold' ) {{ item.item.name }}
-            span( class='spec' ) {{ item.item.specs[0].name }}: {{ selected.name }}
+            span( class='bold' ) {{ item.source.name }}
+            span( class='spec' ) {{ item.source.specs[0].name }}: {{ options[item.option].name }}
 
-        td( class='count border' ) {{ item.count }} {{ item.item.unit }}
-        td( class='price border' ) {{ price() }} руб
-        td( class='build border' ) {{ item.item.buildable ? 'Да' : 'Нет' }}
-        td( class='total border' ) {{ price() * item.count }} руб
+        td( class='count border' ) {{ item.count }} {{ item.source.unit }}
+        td( class='price border' ) {{ item.source.prices.mins[item.option] }} руб
+        td( class='build border' ) {{ item.source.build ? 'Да' : 'Не требуется' }}
+        td( class='total border' ) {{ item.total }} руб
         td( class='actions border' )
-            i( class='icon icon-trash' @click='trash' )
+            i( class='icon icon-trash' @click='$emit("remove", index)' )
 </template>
 
 <script>
-import { setTimeout } from 'timers';
 export default {
-    props: ['item', 'id'],
-    computed: { selected },
-    mounted: init,
-    methods: { price, trash },
+    props: ['item', 'index'],
     data: function () {
         return {
+            options: this.item.source.specs[0].options,
             hide: false
         }
     }
-}
-
-function selected () {
-    for (let option of this.item.item.specs[0].options) {
-        if (option.id === this.item.selected)
-            return option
-    }
-}
-
-function price () {
-    var list = []
-
-    if (this.selected.prices.discounts.length === 0)
-        return this.selected.prices.current
-
-    else for (let discount of this.selected.prices.discounts) 
-        list.push(this.selected.prices.current / ((100 - discount.discount) / 100))
-
-    return Math.min(...list)
-}
-
-function trash () {
-    if (this.hide === true)
-        return
-
-    else {
-        this.hide = true
-        setTimeout(() => {
-            if (this.hide === true) {
-                this.$store.commit('delete', this.id)
-                this.hide = false
-            }
-        }, 500)
-    }
-}
-
-// Mounted
-function init () {
-    this.$emit('total', this.price() * this.item.count)
 }
 </script>
 

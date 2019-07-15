@@ -1,25 +1,14 @@
 <template lang="pug">
     div#filter( :class='{ show }' )
-        div( class='filter-row' )
-            h3( class='title' ) Цена
-            FilterRange( min=0 max=500000 @changed='changed' name='prices' )
+        //- div( class='filter-row' )
+            //- h3( class='title' ) Цена
+            //- FilterRange( min=0 max=500000 @changed='changed' name='prices' )
 
         div( class='filter-row' v-for='filter in catalog.filters')
             h3( class='title' ) {{ filter.name }}
-            FilterRange(
-                v-if='filter.type === "range"'
-                :name='filter.prop'
-                :min='filter.min'
-                :max='filter.max'
-                @changed='changed' )
+            FilterRange( v-if='filter.type === "range"' :value='filter' @input='setFilter' )
 
-            FilterOptions(
-                v-if='filter.type === "select"'
-                :name='filter.prop'
-                :namee='filter.prop'
-                :options='filter.options'
-                @changed='changed' 
-            )
+            //- FilterOptions( v-if='filter.type === "select"' :value='filter' @input='setFilter'  )
 
         button( class='apply' @click='applyFilter' ) Показать товары
 
@@ -33,10 +22,7 @@ export default {
     props: ['catalog'],
     computed: { show },
     components: { FilterRange, FilterOptions },
-    methods: { changed, selected, applyFilter },
-    updated: function (...args) {
-        console.log(...args)
-    },
+    methods: { setFilter, applyFilter },
     data: function () {
         console.log(this.catalog)
         return {
@@ -51,24 +37,17 @@ function show () {
 }
 
 // Methods
-function changed (data) {
-    console.log(data)
-    this.list[ data.name ] = data
-}
-
-function selected (data) {
-
+function setFilter (event) {
+    this.list[ event.prop ] = event
 }
 
 function applyFilter () {
-    for (let prop of Object.keys(this.list)) {
+    for ( let key of Object.keys(this.list) ) {
         this.$store.commit('set-search', {
-            prop: prop,
-            value: this.list[prop]
+            prop: key,
+            value: this.list[key]
         })
     }
-
-    console.log(this.$store.state.search)
 }
 </script>
 

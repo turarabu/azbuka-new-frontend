@@ -10,45 +10,29 @@
             span( class='step' :class='{active: step > 2}' ) Контакты
             span( class='step' :class='{active: step > 3}' ) Бонусная карта
 
-        table( class='items-table' )
-            tr( class='head' )
-                td( class='image data' ) Фото товара
-                td( class='name data' ) Название
-                td( class='count data' ) Количество
-                td( class='price data' ) Цена
-                td( class='build data' ) Сборка
-                td( class='total data' ) Стоимость
-                td( class='actions data' ) 
-
-            CartItem( v-for='(item, index) in cart' :id='index' :key='index' :item='item' @total='addTotal' )
-        CartContinue( :total='total' :build='build' :discount='discount' :step='step' )
+        ItemsList( v-if='step == 1' :cart='cart' )
+        ItemsDelivery( v-if='step == 2' :cart='cart' )
+        
+        CartContinue( :step='step' )
 </template>
 
 <script>
-import CartItem from '@/components/Cart/Item.vue'
+
+import ItemsList from '@/components/Cart/List.vue'
+import ItemsDelivery from '@/components/Cart/Delivery.vue'
 import CartContinue from '@/components/Cart/Continue.vue'
 
 export default {
     props: ['step'],
-    components: { CartItem, CartContinue },
-    methods: { addTotal },
+    components: { ItemsList, ItemsDelivery, CartContinue },
     computed: { cart },
     data: function () {
-        return {
-            total: 0,
-            build: 0,
-            discount: 0
-        }
+        return {}
     }
 }
 
 function cart () {
     return this.$store.state.cart
-}
-
-// Methods
-function addTotal (total) {
-    this.total += total
 }
 </script>
 

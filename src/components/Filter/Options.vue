@@ -1,6 +1,6 @@
 <template lang="pug">
     div( class='filter-options-div' )
-        label( class='filter-option' v-for='option in options' )
+        label( class='filter-option' v-for='option in value.options' )
             input( class='input' type='checkbox' @change='changed(option)' )
             span( class='check-status' )
                 span( class='icon' ) +
@@ -9,7 +9,7 @@
 
 <script>
 export default {
-    props: ['options', 'name'],
+    props: ['value'],
     methods: { changed },
     data: function () {
         return {
@@ -29,11 +29,18 @@ function changed (option) {
         }
     }
 
-    return this.$emit('changed', {
-        name: this.name,
-        type: 'select',
+    return this.$emit('input', clones(this.value, {
         value: this.checked
-    })
+    }))
+}
+
+function clones (...objs) {
+    var list = []
+
+    for ( let obj of objs )
+        list.push(JSON.parse( JSON.stringify(obj) ))
+
+    return Object.assign({}, ...list)
 }
 </script>
 

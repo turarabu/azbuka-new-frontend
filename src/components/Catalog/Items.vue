@@ -1,78 +1,68 @@
 <template lang="pug">
     div( class='block-div block' )
-        div( class='search-results' v-if='excluded > 0' :class='{show: excluded > 0}' )
+        div( class='search-results' v-if='filtered.length < items.length' )
             span( class='your-request' ) По вашему запросу:
                 span( class='query-text' ) {{ search.name && search.name.value }}
 
-            div( v-if='excluded === getItems.length' )
+            div( v-if='filtered.length === 0' )
                 p( class='found-text'  ) Ничего не найдено
                 img( class='empty-filter' src='/images/empty-filter.jpg' )
             p( class='found-text' v-else ) Найдены следующие товары:
 
-        div( class='catalog-items' :class='{small: $store.state.filter === true}' v-if='show === true' )
-            ItemCard(
-                v-for='item in getItems'
-                @exclude='++excluded'
-                :key='item.id'
-                :item='item'
-            )
+        div( class='catalog-items' :class='{small: $store.state.filter === true}' )
+            ItemCollection(
+                v-if='filtered.length === items.length'
+                v-for='collection in collections'
+                :collection='collection'
+                :key='collection.id' )
 
-        ItemsFilter( :catalog='parent' )
+            ItemCard( v-for='item in filtered' :key='item.id' :item='item' )
+
+        ItemsFilter( :catalog='catalog' )
 </template>
 
 <script>
+import help from '@/script/script'
+
 import ItemCard from '@/components/Item/Card.vue'
+import ItemCollection from '@/components/Item/Collection.vue'
 import ItemsFilter from '@/components/Item/Filter.vue'
 
 export default {
-    props: ['parent'],
-    components: { ItemCard, ItemsFilter },
-    computed: { getItems, search },
-    methods: { forceRender },
+    props: ['catalog'],
+    components: { ItemCard, ItemCollection, ItemsFilter },
+    computed: { search },
     mounted: init,
     data: function () {
-        return {
+        console.log('collections', this.catalog)
+
+        this.$nextTick(() => {
+            if ( Object.values(this.search).length > 0 )
+                this.filtered = help.filter.items(this.items, Object.values(this.search))
+            
+            else this.filtered = this.items
+
+            this.$forceUpdate()
+        })
+        
+        return Object.assign(this.catalog, {
             show: true,
-            excluded: 0
-        }
+            filtered: []
+        })
     }
 }
 
 // Computed
-function getItems () {
-    var list = []
-    var parent = 0
-
-    for (let item of this.$store.state.items) {
-        if( item.parentId == this.parent.id )
-            list.push(item)
-    }
-
-    return list 
-}
-
 function search () {
     return this.$store.state.search
 }
 
 function init () {
     this.$store.subscribe((mutation, state) => {
-        if (mutation.type === 'set-search')
-            update.call(this, state.search)
-    })
-}
-
-function update (search) {
-    this.excluded = 0
-    this.forceRender()
-}
-
-// Methods
-function forceRender () {
-    this.show = false
-    this.$nextTick(event => {
-        if (this.show === false)
-            return this.show = true
+        if (mutation.type === 'set-search') {
+            this.filtered = help.filter.items(this.items, Object.values(this.search))
+            return this.$forceUpdate()
+        }
     })
 }
 </script>

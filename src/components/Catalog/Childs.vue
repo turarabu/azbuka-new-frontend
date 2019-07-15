@@ -4,7 +4,7 @@
             v-for='child in getChilds'
             :key='child.id'
             :catalog='child'
-            :parent='parent'
+            :parent='catalog'
         )
             
 </template>
@@ -13,7 +13,7 @@
 import CatalogCard from '@/components/Catalog/Card.vue'
 
 export default {
-    props: ['parent'],
+    props: ['catalog'],
     components: { CatalogCard },
     computed: { getChilds },
     methods: { echo },
@@ -28,7 +28,7 @@ function getChilds () {
         // if (child.id === "0000058")
             // console.log(child.id)
 
-        if (child.parentId === this.parent.id)
+        if (child.parentId === this.catalog.id)
             list.push(child)
     }
     // console.log(list)

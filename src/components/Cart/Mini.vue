@@ -3,8 +3,8 @@
         div( class='cart' )
             div( class='item' :class='{toCart, hide}' v-if='add !== false' )
                 div( class='image-div' )
-                    img( class='image' :src='`/images/dynamic/${ add.item.headImage }.jpg`' )
-                p( class='name' ) {{ add.item.name }}
+                    img( class='image' :src='add.poster' )
+                p( class='name' ) {{ add.source.name }}
 
             div( v-if='cart.length === 0' )
                 p( class='center' ) Корзина пуста
@@ -23,7 +23,7 @@
 <script>
 export default {
     computed: { cart, countText },
-    methods: { toTop, cartCount, price, addCart },
+    methods: { toTop, cartCount, addCart },
     mounted: init,
     data: function () {
         return {
@@ -62,22 +62,15 @@ function countText () {
 function cartCount () {
     var total = 0
 
-    for (let item of this.cart) {
-        total += item.count + this.price(item)
-    }
+    for (let item of this.cart)
+        total += item.total
 
     return total
 }
 
-function price (item) {
-    for (let option of item.item.specs[0].options) {
-        if (option.id === item.selected)
-            return getDiscount(option)
-    }
-}
-
 function addCart (item) {
     this.add = item
+    console.log(item)
 
     setTimeout(() => {
         this.toCart = true
@@ -97,10 +90,11 @@ function addCart (item) {
 // Mounted
 function init () {
     var app = document.querySelector('#app')
+    var events = ['to-cart', 'set-cart']
 
     this.$store.subscribe(mutation => {
-        if (mutation.type === 'add')
-            this.addCart(mutation.payload)
+        if ( events.includes(mutation.type) === true )
+            this.addCart(mutation.payload.item || mutation.payload)
     })
 
     app.addEventListener('scroll', event => {
@@ -108,20 +102,6 @@ function init () {
     })
 }
 
-// Help function
-function getDiscount (option) {
-    var prices = option.prices
-
-    if (prices.discounts.length > 0) {
-        let list = []
-        for (let discount of prices.discounts)
-            list.push(prices.current * discount.discount)
-        
-        return Math.min(list)
-    }
-
-    else return prices.current
-}
 </script>
 
 
