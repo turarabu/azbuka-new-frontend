@@ -6,18 +6,25 @@ export default {
 }
 
 function filterItems (items, filters) {
+    var list = items
+
+    for ( let filter of filters )
+        list = responses.call(this, filter, list)
+
+    return list
+}
+
+function responses (filter, items) {
     var list = []
 
-    for ( let filter of filters ) {
-        for ( let item of items ) {
-            let value = get(filter.key, item, filter.prop)
+    for ( let item of items ) {
+        let value = get(filter.key, item, filter.prop)
 
-            if (value === false)
-                continue
+        if (value === false)
+            continue
 
-            else if ( this[filter.type](value, filter) === true )
-                list.push(item)
-        }
+        else if ( this[filter.type](value, filter) === true )
+            list.push(item)
     }
 
     return list

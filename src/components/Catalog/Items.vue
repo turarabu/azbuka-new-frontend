@@ -2,11 +2,11 @@
     div( class='block-div block' )
         div( class='search-results' v-if='filtered.length < items.length' )
             span( class='your-request' ) По вашему запросу:
-                span( class='query-text' ) {{ search.name && search.name.value }}
+                span( class='query-text' ) {{ search.name && search.name.text }}
 
             div( v-if='filtered.length === 0' )
                 p( class='found-text'  ) Ничего не найдено
-                img( class='empty-filter' src='/images/empty-filter.jpg' )
+                img( class='empty-filter' src='/images/empty-filter.jpg' @click='clearFilter' )
             p( class='found-text' v-else ) Найдены следующие товары:
 
         div( class='catalog-items' :class='{small: $store.state.filter === true}' )
@@ -32,6 +32,7 @@ export default {
     props: ['catalog'],
     components: { ItemCard, ItemCollection, ItemsFilter },
     computed: { search },
+    methods: { clearFilter },
     mounted: init,
     data: function () {
         this.$nextTick(() => {
@@ -55,13 +56,23 @@ function search () {
     return this.$store.state.search
 }
 
+// Mounted
 function init () {
+    var events = ['set-search', 'clear-search']
+
     this.$store.subscribe((mutation, state) => {
-        if (mutation.type === 'set-search') {
-            this.filtered = help.filter.items(this.items, Object.values(this.search))
+        if ( events.includes(mutation.type) ) {
+            var filters = Object.values(this.search)
+            this.filtered = help.filter.items(this.items, filters)
+
             return this.$forceUpdate()
         }
     })
+}
+
+// Methods
+function clearFilter () {
+    this.$store.commit('clear-search')
 }
 </script>
 

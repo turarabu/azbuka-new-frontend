@@ -7,9 +7,14 @@
         LeftBlock( v-bind='{ item, option }' v-model='count' )
         OptionsBlock( v-bind='{ item }' v-model='option' )
 
-        button( class='add-to-cart' @click='toCart' )
-            i( class='icon icon-cart' )
-            span Купить
+        div( class='buttons-div' )
+            button( class='add-to-cart' @click='toCart' )
+                i( class='icon icon-cart' )
+                span Купить
+
+            button( v-if='closeButton === true' class='close-button' @click='$emit("close")' )
+                span Продолжить покупки
+        
 </template>
 
 <script>
@@ -20,7 +25,7 @@ import OptionsBlock from '@/components/Item/Buy/Options.vue'
 export default {
     components: { PriceBlock, LeftBlock, OptionsBlock },
     methods: { toCart, check, add, concat },
-    props: ['item'],
+    props: ['item', 'closeButton'],
     data: function () {
         return {
             option: 0,
@@ -107,17 +112,24 @@ function concat (index, item) {
         font-size 18px
         margin 12px 0
 
+    .buttons-div
+        align-items center
+        display flex
+        justify-content space-between
+        padding 16px 0
+        width 575px
+
     .add-to-cart
         background $red
         border none
         border-radius 25px
         color $white
+        display inline-block
         font-size 18px
-        margin 16px 0
         outline none
         padding 12px
         text-transform uppercase
-        width 300px
+        width 250px
 
         .icon
             display inline-block
@@ -126,4 +138,16 @@ function concat (index, item) {
             top 3px
             margin-right 12px
 
+    .close-button
+        background $white-gray
+        border 1px solid $red
+        border-radius 25px
+        color $red
+        display inline-block
+        font-size 18px
+        font-weight 500
+        outline none
+        padding 12px
+        text-transform uppercase
+        width 300px
 </style>

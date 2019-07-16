@@ -5,16 +5,16 @@
                 i( class='icon icon-close' )
 
             ItemSlider( :item='item' )
-            ItemDetails( :item='item' )
+            ItemBuy( class='show' :item='item' :closeButton='true' @close='close' )
 </template>
 
 <script>
 import ItemSlider from '@/components/Item/Slider.vue'
-import ItemDetails from '@/components/Item/Details.vue'
+import ItemBuy from '@/components/Item/Buy.vue'
 
 export default {
     computed: { item },
-    components: { ItemSlider, ItemDetails },
+    components: { ItemSlider, ItemBuy },
     methods: { checkForClose, close }
 }
 

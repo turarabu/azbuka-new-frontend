@@ -13,15 +13,25 @@
 
 <script>
 export default {
-    props: ['value'],
+    props: ['value', 'set'],
     methods: { update },
     mounted: init,
     data: function () {
+        console.log(this.set)
+        var set = this.set || {}
+
+        if ( set.min || set.max ) {
+            console.log('set', set)
+            setTimeout(() => {
+                this.update('pers')
+            }, 25)
+        }
+
         return {
             active: false,
             num: {
-                max: this.value.max,
-                min: this.value.min
+                max: set.max || this.value.max,
+                min: set.min || this.value.min
             },
 
             per: {
