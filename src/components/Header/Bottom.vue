@@ -75,7 +75,6 @@ function init () {
         this.inited = true
         this.$router.afterEach((to) => {
             this.page = to
-            this.$store.commit('item-preview', false)
             return this.update()
         })
     }
@@ -111,6 +110,7 @@ function updateBreadCrumbs () {
         case 'catalog':
             crumbs.push( getCatalog(id, state) )
             crumbs.push( ...getParents(crumbs, state) )
+            break
 
         case 'cart':
             crumbs.push({

@@ -1,5 +1,6 @@
 <template lang="pug">
     div( class='item-card' )
+        span( class='ticket' v-if='hasDiscount === true' ) Скидка {{ discount }}%
         div( class='image-div' @click='openPreview' )
             img( class='image' :src='poster' onerror='this.onerror = null; this.src = "/images/not-found.png"' )
         
@@ -29,6 +30,7 @@ export default {
         return Object.assign(this.item, {
             poster: `/images/dynamic/${ this.item.headImage }.jpg`,
             hasDiscount: Math.max( this.item.prices.discounts ) > 0,
+            discount: Math.max( ...this.item.prices.discounts ),
             maxPrice: toReadablePrice( Math.max(...this.item.prices.maxs) ),
             minPrice: toReadablePrice( Math.min(...this.item.prices.mins) )
         })
@@ -59,8 +61,24 @@ function toReadablePrice (price) {
 
 .item-card
     border 1px solid darken($white-gray, 5)
+    position relative
+    overflow hidden
     &.hide
         display none
+
+    .ticket
+        background $red
+        color $white
+        display inline-block
+        font-size 18px
+        letter-spacing 1px
+        padding 8px 16px
+        text-align center
+        transform rotate(45deg)
+        position absolute
+        top 40px
+        right -45px
+        width 200px
     
     .image-div
         align-items center

@@ -114,10 +114,10 @@ function addScroll (to) {
             width 100%
 
         .arrow
-            background #777
+            background $white
             box-shadow 0 0 15px RGBA(0, 0, 0, .35)
             border none
-            color $white
+            color $drak-gray
             display block
             outline none
             padding 8px 0

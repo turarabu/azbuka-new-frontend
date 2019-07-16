@@ -12,7 +12,7 @@
 
 <script>
 export default {
-    props: ['item', 'fullSlider'],
+    props: ['item'],
     methods: { openFullSlider },
     data: function () {
         var current = 0
@@ -26,8 +26,7 @@ export default {
 
 // Methods
 function openFullSlider () {
-    if (this.fullSlider === true)
-        return this.$store.commit('full-slider', this.item)
+    return this.$store.commit('full-slider', this.item)
 }
 </script>
 

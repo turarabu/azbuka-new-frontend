@@ -1,7 +1,7 @@
 <template lang="pug">
     div#item
         div( class='content block' v-if='item' )
-            ItemSlider( :item='item' :fullSlider='true' )
+            ItemSlider( :item='item' )
             ItemDetails( :item='item' )
 </template>
 

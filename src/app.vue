@@ -22,6 +22,7 @@ export default {
     components: { HeaderComponent, Preloader, ItemPreview, FullSlider, MiniCart },
     computed: { scrollable },
     methods: { start },
+    mounted: init,
     data: function () {
         return {
             ready: false
@@ -32,6 +33,14 @@ export default {
 // Computed
 function scrollable () {
     return this.$store.state.scrollable
+}
+
+// Mounted
+function init () {
+    this.$router.afterEach(() => {
+        this.$store.commit('item-preview', false)
+        this.$el.scrollTop = 0
+    })
 }
 
 // Methods

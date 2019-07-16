@@ -8,7 +8,7 @@
             h3( class='title' )
                 i( class='icon icon-piggy-bank' )
                 span Мои покупки
-                
+
             div( class='steps-div' )
                 span( class='step' :class='{active: step > 0}' ) Список товаров
                 span( class='step' :class='{active: step > 1}' ) Сборка и доставка
@@ -17,6 +17,7 @@
 
             ItemsList( v-if='step == 1' :cart='cart' )
             ItemsDelivery( v-if='step == 2' :cart='cart' )
+            CartContact( v-if='step == 3' :cart='cart' )
             
             CartContinue( :step='step' )
 </template>
@@ -25,11 +26,12 @@
 
 import ItemsList from '@/components/Cart/List.vue'
 import ItemsDelivery from '@/components/Cart/Delivery.vue'
+import CartContacts from '@/components/Cart/Contacts.vue'
 import CartContinue from '@/components/Cart/Continue.vue'
 
 export default {
     props: ['step'],
-    components: { ItemsList, ItemsDelivery, CartContinue },
+    components: { ItemsList, ItemsDelivery, CartContacts, CartContinue },
     computed: { cart },
     data: function () {
         return {}

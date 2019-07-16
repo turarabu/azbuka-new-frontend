@@ -1,11 +1,11 @@
 <template lang="pug">
 
     div( class='cart-item row' )
-        div( class='image data' )
+        router-link( tag='div' class='image data' :to='`/item/${ item.id }`' )
             div( class='image-div' )
                 img( class='image' :src='item.poster' )
 
-        div( class='name data' )
+        router-link( tag='div' class='name data' :to='`/item/${ item.id }`' )
             h3( class='name-text' ) {{ item.source.name }}
             p( class='selected-option' ) {{ spec.name }}: {{ spec.options[item.option].name }}
         div( class='count data' ) {{ item.count }} {{ item.source.unit }}
