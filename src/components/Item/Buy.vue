@@ -34,7 +34,6 @@ export default {
     }
 }
 
-// Methods
 function toCart () {
     var cart = this.$store.state.cart
     var optionsList = this.item.specs[this.option].options

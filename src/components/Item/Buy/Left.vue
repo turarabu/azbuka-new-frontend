@@ -5,7 +5,17 @@
         div( class='count-div' )
             div( class='selected-count' :style='{width: `${ count + 1 }%`}' )
 
-        span( v-if='left === 0 || selected.warehouses.length === 0' class='empty' ) Нет в наличии
+        div( v-if='left === 0')
+            span( v-if='selected.inTransit.length === 0' class='empty' ) Нет в наличии
+            div( v-else class='lefts-in-shop-div' )
+                div( class='lefts-in-shop' )
+                    span( class='lefts-in-shop-title' ) Дата прибытия:
+                    span( class='transit-date' ) {{ minTransit(selected.inTransit).date }}
+
+                div( class='lefts-in-shop' )
+                    span( class='lefts-in-shop-title' ) Количество
+                    span( class='left-count' ) {{ minTransit(selected.inTransit).count }} {{ item.unit }}
+
         div( v-else class='lefts-in-shop-div' )
             div( class='lefts-in-shop' )
                 span( class='lefts-in-shop-title' ) В наличии на складах
@@ -29,7 +39,7 @@
 export default {
     props: ['item', 'option', 'value'],
     computed: { left, selected },
-    methods: { setCount },
+    methods: { minTransit, setCount },
     mounted: init,
     data: function () {
         return {
@@ -56,6 +66,28 @@ function selected () {
 }
 
 // Methods
+function minTransit () {
+    var array = [ ...this.selected.inTransit ]
+    var config = {
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric'
+    }
+
+    array.sort((a, b) => {
+        return new Date(a) - new Date(b)
+    })
+
+    if (true) {
+        let date = array[0].date.split('.').reverse()
+
+        return {
+            date: new Date(date).toLocaleDateString('ru-RU', config),
+            count: array[0].count
+        }
+    }
+}
+
 function setCount (type) {
     if ( type === 'sub' )
         this.count = Math.max(this.count - 1, Math.min(1, this.left))
@@ -128,6 +160,12 @@ function setCount (type) {
             padding 6px 8px 6px 24px
             position relative
             width 200px
+
+        .transit-date
+            display block
+            font-size 16px
+            font-weight 500
+            margin-bottom 8px
 
         .left-count
             font-size 16px
