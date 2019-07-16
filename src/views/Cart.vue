@@ -10,10 +10,17 @@
                 span Мои покупки
 
             div( class='steps-div' )
-                span( class='step' :class='{active: step > 0}' ) Список товаров
-                span( class='step' :class='{active: step > 1}' ) Сборка и доставка
-                span( class='step' :class='{active: step > 2}' ) Контакты
-                span( class='step' :class='{active: step > 3}' ) Бонусная карта
+                span( v-if='step < 1' class='step active' ) Список товаров
+                router-link( v-else tag='span' class='step active' to='/cart/1' ) Список товаров
+
+                span( v-if='step < 2' class='step' ) Сборка и доставка
+                router-link( v-else tag='span' class='step active' to='/cart/2' ) Сборка и доставка
+
+                span( v-if='step < 3' class='step' ) Контакты
+                router-link( v-else tag='span' class='step active' to='/cart/3' ) Контакты
+
+                span( v-if='step < 4' class='step' ) Бонусная карта
+                router-link( v-else tag='span' class='step active' to='/cart/4' ) Бонусная карта
 
             ItemsList( v-if='step == 1' :cart='cart' )
             ItemsDelivery( v-if='step == 2' :cart='cart' )
