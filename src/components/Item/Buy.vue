@@ -36,13 +36,18 @@ export default {
 
 function toCart () {
     var cart = this.$store.state.cart
+    var item = this.item
     var optionsList = this.item.specs[this.option].options
+    var inTransit = item.transits[this.option] || 0
+
 
     for ( let index in cart ) {
         let item = cart[index]
 
         if ( item.id === this.item.id ) {
-            let check = this.check(item)
+            let check = this.check(item, inTransit)
+            console.log(check)
+
             if ( check === 'concat' )
                 return this.concat(index, item)
 
@@ -50,27 +55,27 @@ function toCart () {
         }
     }
 
-    if ( optionsList[this.option].left > 0 )
-        return this.add()
+    if ( (optionsList[this.option].left + inTransit) > 0 )
+        return this.add(inTransit)
 }
 
-function check (item) {
+function check (item, additional) {
     var optionsList = this.item.specs[this.option].options
-    
-    if ( optionsList[this.option].left === 0 )
+
+    if ( (optionsList[this.option].left + additional) === 0 )
         return false
 
-    if ( item.count + this.count <= optionsList[this.option].left )
+    if ( item.count + this.count <= (optionsList[this.option].left + additional) )
         return 'concat'
 
     return false
 }
 
-function add () {
-    var optionsList = this.item.specs[this.option].options
+function add (additional) {
     var item = this.item
+    var optionsList = this.item.specs[this.option].options
 
-    if ( this.count <= optionsList[this.option].left )
+    if ( this.count <= (optionsList[this.option].left + additional) )
         this.$store.commit('to-cart', {
             id: item.id,
             source: item,

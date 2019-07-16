@@ -88,10 +88,27 @@ function getProps (items) {
 
 // Items sort
 function items (items) {
-    for ( let item of items )
+    for ( let item of items ) {
+        item.transits = sortTransits(item)
         item.prices = sortPrices(item)
+    }
 
     return items
+}
+
+function sortTransits (item) {
+    var transits = []
+    var spec = item.specs[0].options
+
+    for ( let i in spec ) {
+        for ( let trans of spec[i].inTransit ) {
+            if ( transits[i] === undefined )
+                transits[i] = parseInt(trans.count)
+            else transits[i] += parseInt(trans.count)
+        }
+    }
+
+    return transits
 }
 
 function sortPrices (item) {

@@ -1,11 +1,12 @@
 <template lang="pug">
     div#preview( :class='{show: item !== false}' @click='checkForClose' )
         div( class='content block' v-if='item' )
-            button( class='close' @click='close' ) X
-                i( class='icon icon-close' )
+            button( class='close' @click='close' ) Закрыть
+            div( class='top-line' ) Быстрый просмотр
 
-            ItemSlider( :item='item' )
-            ItemBuy( class='show' :item='item' :closeButton='true' @close='close' )
+            div( class='table' )
+                ItemSlider( :item='item' :link='true' )
+                ItemBuy( class='show' :item='item' :closeButton='true' @close='close' )
 </template>
 
 <script>
@@ -54,24 +55,33 @@ function close () {
     .content
         background $white
         box-shadow 0 0 25px RGBA(0, 0, 0, .5)
-        display grid
-        grid-template-columns 750px 750px
-        justify-content space-between
-        padding 92px 32px 64px 32px
+        padding-top 64px
         position relative
+        width 1540px
+
+        .table
+            display grid
+            grid-template-columns 750px 750px
+            justify-content space-between
+            padding-left 32px
 
         .close
-            align-items center
-            background $red
+            background $white
             border none
-            color $white
-            display flex
-            font-size 28px
-            justify-content center
+            color $balck
+            font-size 18px
+            font-weight 500
             outline none
+            padding 24px 24px 18px 24px
             position absolute
             top 0
             right 0
-            height 50px
-            width 50px
+            width 150px
+
+        .top-line
+            background $red
+            color $white
+            font-size 20px
+            padding 16px 32px
+            text-transform uppercase
 </style>

@@ -14,7 +14,7 @@
             
             div( class='right' v-if='last.showItems === true' )
                 i( class='icon icon-search' )
-                input( class='search' placeholder='Поиск' v-model='search' )
+                input( class='search' placeholder='Поиск' v-$model='{search}' )
 
                 span( class='filter-switcher' @click='switchFilter' )
                     i( class='icon icon-filter' )

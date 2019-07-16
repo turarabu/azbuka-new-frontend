@@ -50,7 +50,10 @@ export default {
 
 function init () {
     if ( this.value > this.left ) {
-        this.count = this.left
+        let item = this.item
+        let inTransit = item.transits[this.option] || 0
+
+        this.count = Math.min(this.value, this.left + inTransit)
         this.$emit('input', this.left)
     }
 }
@@ -89,11 +92,15 @@ function minTransit () {
 }
 
 function setCount (type) {
+    var item = this.item
+    var inTransit = item.transits[this.option] || 0
+    var left = this.left + inTransit
+
     if ( type === 'sub' )
-        this.count = Math.max(this.count - 1, Math.min(1, this.left))
+        this.count = Math.max(this.count - 1, Math.min(1, left))
 
     else if ( type === 'add' )
-        this.count = Math.min(this.count + 1, this.left)
+        this.count = Math.min(this.count + 1, left)
 
     return this.$emit('input', this.count)
 }
