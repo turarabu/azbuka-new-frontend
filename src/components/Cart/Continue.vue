@@ -30,7 +30,7 @@ export default {
 function total () {
     var total = 0
     for ( let item of this.$store.state.cart )
-        total += item.count * item.total
+        total += item.total
 
     return total
 }

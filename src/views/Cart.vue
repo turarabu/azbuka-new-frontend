@@ -54,6 +54,7 @@ function cart () {
 @import '~@/style/palette'
 
 #cart
+    margin-bottom 32px
 
     .empty-cart
         flex-direction column

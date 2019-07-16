@@ -28,6 +28,8 @@ function item () {
 @import '~@/style/palette'
 
 #item
+    margin-bottom 64px
+
     .content
         display grid
         grid-template-columns 850px 850px

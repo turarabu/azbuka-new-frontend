@@ -34,6 +34,7 @@ function showItems () {
 
 <style lang="stylus">
 #catalog
+    margin-bottom 156px
 
     .id
         display none

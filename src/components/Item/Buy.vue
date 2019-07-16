@@ -37,14 +37,14 @@ export default {
 function toCart () {
     var cart = this.$store.state.cart
     var item = this.item
-    var optionsList = this.item.specs[this.option].options
+    var optionsList = this.item.specs[0].options
     var inTransit = item.transits[this.option] || 0
 
 
     for ( let index in cart ) {
         let item = cart[index]
 
-        if ( item.id === this.item.id ) {
+        if ( item.id === this.item.id && item.option === this.option ) {
             let check = this.check(item, inTransit)
             console.log(check)
 
@@ -60,7 +60,7 @@ function toCart () {
 }
 
 function check (item, additional) {
-    var optionsList = this.item.specs[this.option].options
+    var optionsList = this.item.specs[0].options
 
     if ( (optionsList[this.option].left + additional) === 0 )
         return false
@@ -73,7 +73,7 @@ function check (item, additional) {
 
 function add (additional) {
     var item = this.item
-    var optionsList = this.item.specs[this.option].options
+    var optionsList = this.item.specs[0].options
 
     if ( this.count <= (optionsList[this.option].left + additional) )
         this.$store.commit('to-cart', {
