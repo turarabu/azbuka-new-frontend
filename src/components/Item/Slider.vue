@@ -39,7 +39,10 @@ function getImage (image) {
 }
 
 function openFullSlider () {
-    return this.$store.commit('full-slider', this.item)
+    return this.$store.commit('set-popup', {
+        popup: 'fullSlider',
+        value: this.item
+    })
 }
 
 function scroll (px) {

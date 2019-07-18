@@ -7,10 +7,8 @@ export function Store () {
     return new Vuex.Store({
         state: state(),
         mutations: {
-            'set-catalog': setCatalog,
-            'set-items': setItems,
-            'item-preview': itemPreview,
-            'full-slider': fullSlider,
+            'set-state': setState,
+            'set-popup': setPopup,
             'to-cart': toCart,
             'set-cart': setCart,
             'remove-cart': deleteFromCart,
@@ -25,36 +23,31 @@ function state () {
     return {
         cart: [],
         catalog: [],
+        stocks: [],
         items: [],
-        preview: false,
-        fullSlider: false,
-        scrollable: true,
+        search: {},
         filter: false,
-        filters: [],
-        search: {}
+        scrollable: true,
+        popup: {
+            preview: false,
+            fullSlider: false,
+            cart: false
+        }
     }
 }
 
-function setCatalog (state, data) {
-    state.catalog = data
-    window.catalog = data
+function setState (state, data) {
+    window[data.key] = data.value
+    state[data.key] = data.value
 }
 
-function setItems (state, data) {
-    state.items = data
-    window.items = data
-}
+function setPopup (state, data) {
+    state.popup[data.popup] = data.value
 
-function itemPreview (state, set) {
-    state.preview = set
-    state.scrollable = set === false
-        ? true : false
-}
-
-function fullSlider (state, set) {
-    state.fullSlider = set
-    state.scrollable = set === false
-        ? true : false
+    if ( data.value === false )
+        state.scrollable = true
+    
+    else state.scrollable = true
 }
 
 function toCart (state, order) {

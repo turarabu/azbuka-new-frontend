@@ -1,6 +1,6 @@
 <template lang="pug">
     div#mini-cart( v-if='route.name !== "cart"' :class='{show: scrollTop >= 1250}' )
-        div( class='cart' )
+        div( class='cart' @click='openPreview' )
             div( class='item' :class='{toCart, hide}' v-if='add !== false' )
                 div( class='image-div' )
                     img( class='image' :src='add.poster' )
@@ -9,7 +9,7 @@
             div( v-if='cart.length === 0' )
                 p( class='center' ) Корзина пуста
             
-            router-link( tag='div' v-else to='/cart/1' )
+            div( v-else to='/cart/1' )
                 p( class='count' ) В корзине {{ cart.length }} {{ countText }}
                 p( class='total' ) На сумму {{ cartCount().toLocaleString('ru-RU') }} руб
 
@@ -23,7 +23,7 @@
 <script>
 export default {
     computed: { cart, countText },
-    methods: { toTop, cartCount, addCart },
+    methods: { openPreview, toTop, cartCount, addCart },
     mounted: init,
     data: function () {
         return {
@@ -36,11 +36,19 @@ export default {
     }
 }
 
+// Computed
 function cart () {
     return this.$store.state.cart
 }
 
 // Methods
+function openPreview () {
+    this.$store.commit('set-popup', {
+        popup: 'cart',
+        value: this.cart
+    })
+}
+
 function toTop () {
     var app = document.querySelector('#app')
     var scrolled = app.scrollTop

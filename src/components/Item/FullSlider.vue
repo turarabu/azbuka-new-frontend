@@ -29,7 +29,7 @@ export default {
 
 // Computed
 function item () {
-    return this.$store.state.fullSlider
+    return this.$store.state.popup.fullSlider
 }
 
 function list () {
@@ -47,7 +47,10 @@ function checkForClose (event) {
 }
 
 function close () {
-    return this.$store.commit('full-slider', false)
+    return this.$store.commit('set-popup', {
+        popup: 'fullSlider',
+        value: false
+    })
 }
 
 function addScroll (to) {

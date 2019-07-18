@@ -3,6 +3,7 @@
         HeaderComponent
         router-view
 
+        CartPreview
         ItemPreview
         FullSlider
         MiniCart
@@ -14,12 +15,14 @@
 <script>
 import HeaderComponent from '@/components/Header/Index.vue'
 import Preloader from '@/views/Preloader.vue'
-import ItemPreview from '@/components/Item/Preview.vue'
 import MiniCart from '@/components/Cart/Mini.vue'
+
+import CartPreview from '@/components/Cart/Preview.vue'
+import ItemPreview from '@/components/Item/Preview.vue'
 import FullSlider from '@/components/Item/FullSlider.vue'
 
 export default {
-    components: { HeaderComponent, Preloader, ItemPreview, FullSlider, MiniCart },
+    components: { HeaderComponent, Preloader, CartPreview, ItemPreview, FullSlider, MiniCart },
     computed: { scrollable },
     methods: { start },
     mounted: init,
@@ -38,8 +41,16 @@ function scrollable () {
 // Mounted
 function init () {
     this.$router.afterEach(() => {
-        this.$store.commit('item-preview', false)
         this.$el.scrollTop = 0
+        this.$store.commit('set-popup', {
+            popup: 'preview',
+            value: false
+        })
+
+        this.$store.commit('set-popup', {
+            popup: 'cart',
+            value: false
+        })
     })
 }
 

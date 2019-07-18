@@ -72,6 +72,7 @@ function check (item, additional) {
 }
 
 function add (additional) {
+    console.log(this.count)
     var item = this.item
     var optionsList = this.item.specs[0].options
 
@@ -87,6 +88,7 @@ function add (additional) {
 }
 
 function concat (index, item) {
+    console.log(this.count)
     item.count += this.count
     item.total = this.item.prices.mins[this.option] * item.count
 

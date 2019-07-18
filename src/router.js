@@ -18,7 +18,9 @@ function routes () {
         makePath('/', 'Home'),
         makePath('/catalog/:id', 'Catalog'),
         makePath('/item/:id', 'Item'),
-        makePath('/cart/:step', 'Cart')
+        makePath('/cart/:step', 'Cart'),
+        makePath('/stock/:id', 'Stock'),
+        makePath('/all', 'All')
     ]
 }
 

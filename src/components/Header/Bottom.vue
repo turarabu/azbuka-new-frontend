@@ -118,6 +118,18 @@ function updateBreadCrumbs () {
                 name: 'Корзина',
                 id: 1
             })
+            break
+
+        case 'stock':
+            crumbs.push( getStock(id, state) )
+            break
+
+        case 'all':
+            crumbs.push({
+                type: 'all',
+                name: 'Все товары',
+                id: ''
+            })
     }
 
     return this.crumbs = crumbs.reverse()
@@ -162,6 +174,17 @@ function getParents (crumbs, state) {
     }
 
     return result
+}
+
+function getStock (id, state) {
+    for ( let stock of state.stocks ) {
+        if ( stock.id == id )
+            return {
+                type: 'stock',
+                name: stock.name,
+                id: id
+            }
+    }
 }
 </script>
 

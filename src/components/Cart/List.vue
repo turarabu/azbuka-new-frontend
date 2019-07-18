@@ -1,5 +1,5 @@
 <template lang="pug">
-    div( class='cart-items-list' )
+    div( class='cart-items-list' :class='{ mini }' )
         div( v-if='cart.length > 0' )
             div( class='row head' )
                 div( class='image data' ) Фото товара
@@ -17,7 +17,7 @@
 import CartItem from '@/components/Cart/Item.vue'
 
 export default {
-    props: ['cart'],
+    props: ['cart', 'mini'],
     components: { CartItem },
     methods: { remove }
 }
@@ -35,6 +35,8 @@ function remove (id) {
 
 .cart-items-list
     margin 32px 0
+    &.mini
+        margin 32px 16px
 
     .row
         align-items center

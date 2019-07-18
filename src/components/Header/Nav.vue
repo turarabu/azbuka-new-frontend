@@ -1,6 +1,10 @@
 <template lang="pug">
     nav( class='nav' )
         div( class='block' )
+            router-link( class='link' to='/all' )
+                i( class='icon icon-allForHome' )
+                span( class='text' ) Все товары
+
             router-link(
             v-for='nav in catalog(0)'
             class='link'

@@ -13,6 +13,7 @@
 export default {
     props: ['collection'],
     data: function () {
+        console.log('collection', this.collection)
         return Object.assign(this.collection, {
             poster: `/images/dynamic/${ this.collection.headImage }.jpg`,
             link: `/catalog/${ this.collection.id }`

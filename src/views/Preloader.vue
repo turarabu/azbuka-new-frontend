@@ -13,7 +13,7 @@
 
                 i( class='icon icon-angle-down' )
                 select( class='select' v-model='shop' )
-                    option( value='0' ) Тестовый магазин
+                    option( value='0' ) АМ Русская 2K
 
             button( class='confirm' @click='confirm' ) Продолжить
 
@@ -27,7 +27,7 @@
 import help from '@/script/script'
 
 export default {
-    methods: { confirm, download, getCatalog, getItems },
+    methods: { confirm, download, getCatalog, getItems, getStocks },
     data: function () {
         return {
             comment: 'Загрузка...',
@@ -50,6 +50,7 @@ function confirm () {
 async function download () {
     var catalog = await this.getCatalog()
     var items = await this.getItems()
+    var stocks = await this.getStocks()
 
     this.load = 100
     this.comment = 'Почти готово...'
@@ -57,9 +58,22 @@ async function download () {
     setTimeout(() => {
         var sortedItems = help.sort.items(items)
         var sortedCatalog = help.sort.catalog(catalog, sortedItems)
+        var sortedStocks = help.sort.stocks(stocks, sortedCatalog, sortedItems)
 
-        this.$store.commit('set-catalog', sortedCatalog)
-        this.$store.commit('set-items', sortedItems)
+        this.$store.commit('set-state', {
+            key: 'catalog', 
+            value: sortedCatalog
+        })
+
+        this.$store.commit('set-state', {
+            key: 'items', 
+            value: sortedItems
+        })
+
+        this.$store.commit('set-state', {
+            key: 'stocks', 
+            value: sortedStocks
+        })
 
         this.$emit('ready', true)
     }, 10)
@@ -77,9 +91,20 @@ function getCatalog () {
 
 function getItems () {
     this.comment = 'Получаю список товаров...'
-    this.load = 50
+    this.load = 33
 
     return ajax('item/list?shop=000000001', request => {
+        return new Promise((resolve, reject) => {
+            handle.call(request, resolve, reject, this)
+        })
+    })
+}
+
+function getStocks () {
+    this.comment = 'Получаю список акции...'
+    this.load = 99
+
+    return ajax('stock/list', request => {
         return new Promise((resolve, reject) => {
             handle.call(request, resolve, reject, this)
         })
@@ -106,11 +131,13 @@ function handle (resolve, reject, vue) {
             contentLength = this.getResponseHeader('Content-Length')
 
         if (this.readyState === 3) {
-            let load = (100 / contentLength * response.length) / 2
+            let load = (100 / contentLength * response.length) / 3
 
-            if (vue.load >= 50)
-                vue.load = Math.min(99, 50 + load + 3)
-            else vue.load = load
+            if ( vue.load >= 66 )
+                vue.load = Math.min(99, 66 + load)
+            else if ( vue.load >= 33 )
+                vue.load = Math.min(60, 33 + load)
+            else vue.load = Math.min(33, load)
         }
 
         if (this.readyState === 4 && this.status === 200) {

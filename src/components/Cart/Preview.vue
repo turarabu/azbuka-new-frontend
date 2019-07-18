@@ -1,27 +1,29 @@
 <template lang="pug">
-    div#preview( :class='{show: item !== false}' @click='checkForClose' )
-        div( class='content block' v-if='item' )
+    div#cart-preview( :class='{show: cart !== false}' @click='checkForClose' )
+        div( class='content block' v-if='cart' )
             button( class='close' @click='close' ) Закрыть
-            div( class='top-line' ) Быстрый просмотр
+            div( class='top-line' ) Товары в вашей корзине
 
-            div( class='table' )
-                ItemSlider( :item='item' :link='true' )
-                ItemBuy( class='show' :item='item' :closeButton='true' @close='close' )
+            div( class='content-div' )
+                ItemsList( :cart='cart' :mini='true' )
+
+            ContinueMini( :cart='cart' @close='close' )
+
 </template>
 
 <script>
-import ItemSlider from '@/components/Item/Slider.vue'
-import ItemBuy from '@/components/Item/Buy.vue'
+import ItemsList from '@/components/Cart/List.vue'
+import ContinueMini from '@/components/Cart/ContinueMini.vue'
 
 export default {
-    computed: { item },
-    components: { ItemSlider, ItemBuy },
+    computed: { cart },
+    components: { ItemsList, ContinueMini },
     methods: { checkForClose, close }
 }
 
 // Computed
-function item () {
-    return this.$store.state.popup.preview
+function cart () {
+    return this.$store.state.popup.cart
 }
 
 // Methods
@@ -32,7 +34,7 @@ function checkForClose (event) {
 
 function close () {
     return this.$store.commit('set-popup', {
-        popup: 'preview',
+        popup: 'cart',
         value: false
     })
 }
@@ -41,26 +43,31 @@ function close () {
 <style lang="stylus">
 @import '~@/style/palette'
 
-#preview
+#cart-preview
     background RGBA(0, 0, 0, .5)
     display none
-    overflow auto
-    padding 32px 0 64px 0
+    overflow hidden
+    padding 32px 0 0 0
     position fixed
     top 0
     left 0
     bottom 0
     right 0
-    z-index 5
+    z-index 15
     &.show
         display block
 
     .content
         background $white
         box-shadow 0 0 25px RGBA(0, 0, 0, .5)
+        height 980px
+        overflow hidden
         padding-top 64px
         position relative
-        width 1540px
+
+        .content-div
+            max-height 700px
+            overflow auto
 
         .table
             display grid

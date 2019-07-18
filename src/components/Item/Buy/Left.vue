@@ -52,9 +52,10 @@ function init () {
     if ( this.value > this.left ) {
         let item = this.item
         let inTransit = item.transits[this.option] || 0
+        console.log('transit', Math.min(this.value, this.left + inTransit))
 
         this.count = Math.min(this.value, this.left + inTransit)
-        this.$emit('input', this.left)
+        this.$emit('input', this.count)
     }
 }
 

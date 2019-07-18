@@ -4,7 +4,7 @@
         div( class='image-div' @click='openPreview' )
             img( class='image' :src='poster' onerror='this.onerror = null; this.src = "/images/not-found.png"' )
         
-        router-link( tag='div' class='meta' :to='`/item/${ item.id }`' :linkto='`/item/${ item.id }`' )
+        router-link( tag='div' class='meta' :to='`/item/${ item.id }`' )
             p( class='name' ) {{ item.name }}
 
             p( class='price-text' ) Цена
@@ -44,7 +44,10 @@ function search () {
 
 // Methods
 function openPreview () {
-    this.$store.commit('item-preview', this.item)
+    this.$store.commit('set-popup', {
+        popup: 'preview',
+        value: this.item
+    })
 }
 
 // Help functions
@@ -97,6 +100,7 @@ function toReadablePrice (price) {
         font-weight 500
         height 72px
         padding 0 16px
+        white-space normal
         word-break break-all
 
     .price-text

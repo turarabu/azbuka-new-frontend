@@ -1,4 +1,4 @@
-export default { catalog, items }
+export default { catalog, items, stocks }
 
 
 // Catalog sort
@@ -144,4 +144,41 @@ function getDiscounts (option) {
         discounts.push(discount.discount)
 
     return discounts
+}
+
+// Stocks
+function stocks (stocks, catalog, items) {
+    for ( let stock of stocks ) {
+        stock.collections = getStockChilds(stock, catalog)
+        stock.items = getStockItems(stock, items)
+    }
+
+    return stocks
+}
+
+function getStockChilds (stock, catalog) {
+    var collections = []
+
+    for ( let collection of stock.collections ) {
+        for ( let source of catalog ) {
+            if ( source.id == collection.idCollection )
+                collections.push( Object.assign(collection, { source }) )
+        }
+    }
+
+    return collections
+}
+
+function getStockItems (stock, items) {
+    var goods = []
+    stock.goods.sort((a, b) => { return a.discount - b.discount })
+
+    for ( let good of stock.goods ) {
+        for ( let source of items ) {
+            if ( source.id == good.idProduct )
+                goods.push( Object.assign(good, { source }) )
+        }
+    }
+
+    return goods
 }
