@@ -1,5 +1,7 @@
 <template lang="pug">
     div( class='cart-items-mini-list' :class='{ mini }' )
+        Confirm( v-bind='{ question }' @answer='answer' )
+
         div( v-if='cart.length > 0' )
             div( class='row head' )
                 div( class='image data' ) Фото товара
@@ -16,19 +18,53 @@
 </template>
 
 <script>
+import Confirm from '@/components/Cart/Confirm.vue'
 import MiniItem from '@/components/Cart/MiniItem.vue'
 
 export default {
     props: ['cart', 'mini'],
-    components: { MiniItem },
-    methods: { remove }
+    components: { Confirm, MiniItem },
+    methods: { remove, removeAll, answer, confirm },
+    data: function () {
+        return {
+            question: false,
+            waiting: false
+        }
+    }
 }
 
-function remove (id) {
-    var check = confirm('Удалить товар из корзины?')
+async function remove (id) {
+    var check = await this.confirm('Удалить товар из корзины?')
 
     if ( check === true )
         this.$store.commit('remove-cart', id)
+}
+
+async function removeAll () {
+    var check = await this.confirm('Очистить корзину?')
+
+    if ( check === true )
+        this.$store.commit('clear-cart', id)
+}
+
+function answer (answer) {
+    this.question = false
+
+    if ( this.waiting === false )
+        return
+    
+    else this.waiting(answer)
+}
+
+function confirm (question) {
+    this.question = question
+
+    return new Promise (resolve => {
+        this.waiting = (answer) => {
+            this.waiting = false
+            return resolve(answer)
+        }
+    })
 }
 </script>
 
@@ -37,6 +73,7 @@ function remove (id) {
 
 .cart-items-mini-list
     margin 32px 16px
+    position relative
 
     .row
         align-items center
@@ -62,8 +99,8 @@ function remove (id) {
         .price
             width 150px
 
-        .count
-            width 170px
+        .count-cart
+            width 180px
 
         .actions
             width 80px

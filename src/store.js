@@ -12,6 +12,7 @@ export function Store () {
             'to-cart': toCart,
             'set-cart': setCart,
             'remove-cart': deleteFromCart,
+            'clear-cart': clearCart,
             'set-search': setSearch,
             'clear-search': clearSearch,
             'switch-filter': switchFilter
@@ -60,6 +61,10 @@ function setCart (state, newItem) {
 
 function deleteFromCart (state, id) {
     state.cart.splice(id, 1)
+}
+
+function clearCart (state) {
+    state.cart = []
 }
 
 function setSearch (state, search) {
