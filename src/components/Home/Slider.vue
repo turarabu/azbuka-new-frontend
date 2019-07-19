@@ -6,8 +6,8 @@
             i( class='icon icon-angle-down' )
 
         div( class='slides-div' )
-            router-link( v-for='slide in stocks' tag='div' class='slide' :to='`/stocks/${ slide.id }`' :key='slide.id' )
-                div( class='slide-image-div' )
+            div( v-for='slide in stocks' class='slide' )
+                router-link( tag='div' class='slide-image-div' :to='`/stock/${ slide.id }`' )
                     img( class='slide-image' :src='getImage(slide.headImage)' )
                     //- img( class='image' :src='getImage(slide.headImage)' )        
             

@@ -14,7 +14,7 @@
             
             div( class='right' v-if='last.showItems === true' )
                 i( class='icon icon-search' )
-                input( class='search' placeholder='Поиск' v-$model='{search}' )
+                input( type='search' class='search' placeholder='Поиск' v-model='search' )
 
                 span( class='filter-switcher' @click='switchFilter' )
                     i( class='icon icon-filter' )
@@ -51,11 +51,12 @@ function search () {
     return {
         get () {
             return this.$store.state.search.name
-                ? this.$store.state.search.name.value
+                ? this.$store.state.search.name.text
                 : ''
         },
 
         set (value) {
+            console.log(value)
             this.$store.commit('set-search', {
                 prop: 'name',
                 value: {
