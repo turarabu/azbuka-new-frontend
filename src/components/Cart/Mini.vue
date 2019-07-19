@@ -1,6 +1,6 @@
 <template lang="pug">
     div#mini-cart( v-if='route.name !== "cart"' :class='{show: scrollTop >= 1250}' )
-        div( class='cart' @click='openPreview' )
+        div( v-if='popup === false' class='cart' @click='openPreview' )
             div( class='item' :class='{toCart, hide}' v-if='add !== false' )
                 div( class='image-div' )
                     img( class='image' :src='add.poster' )
@@ -22,7 +22,7 @@
 
 <script>
 export default {
-    computed: { cart, countText },
+    computed: { cart, popup, countText },
     methods: { openPreview, toTop, cartCount, addCart },
     mounted: init,
     data: function () {
@@ -39,6 +39,10 @@ export default {
 // Computed
 function cart () {
     return this.$store.state.cart
+}
+
+function popup () {
+    return this.$store.state.popup.cart
 }
 
 // Methods

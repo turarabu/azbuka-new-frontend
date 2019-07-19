@@ -1,6 +1,6 @@
 <template lang="pug">
 
-    div( class='cart-item row' )
+    div( class='cart-mini-item row' )
         router-link( tag='div' class='image data' :to='`/item/${ item.id }`' )
             div( class='image-div' )
                 img( class='image' :src='item.poster' )
@@ -8,7 +8,7 @@
         router-link( tag='div' class='name data' :to='`/item/${ item.id }`' )
             h3( class='name-text' ) {{ item.source.name }}
             p( class='selected-option' ) {{ spec.name }}: {{ spec.options[item.option].name }}
-
+        
         ItemLeft( v-bind='{ item, index }' )
 
         div( v-if='maxDiscount > 0' class='price data' )
@@ -19,8 +19,6 @@
         div( v-else class='price data' )
             span( class='current' ) {{ minPrice.toLocaleString("ru-RU") }} руб
 
-        div( class='build data' ) {{ item.source.build ? 'Да' : 'Не требуется' }}
-        div( class='total data' ) {{ item.total.toLocaleString("ru-RU") }} руб
         div( class='actions' ) 
             i( class='icon icon-trash' @click='$emit("remove", index)' )
 
@@ -30,12 +28,13 @@
 import ItemLeft from '@/components/Cart/Item/Left.vue'
 
 export default {
-    props: ['item', 'index'],
     components: { ItemLeft },
+    props: ['item', 'index'],
     data: function () {
         var item = this.item.source
         
         return {
+            source: item.source,
             spec: item.specs[0],
             maxDiscount: Math.max( ...item.prices.discounts ),
             minPrice: Math.min( ...item.prices.mins ),
@@ -49,7 +48,7 @@ export default {
 <style lang="stylus">
 @import '~@/style/palette'
 
-.cart-item
+.cart-mini-item
     opacity 1
     &.hide
         opacity 0
@@ -61,7 +60,7 @@ export default {
         align-items center
         display flex
         justify-content center
-        height 180px
+        height 150px
         width 100%
 
         .image

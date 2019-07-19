@@ -5,19 +5,19 @@
             div( class='top-line' ) Товары в вашей корзине
 
             div( class='content-div' )
-                ItemsList( :cart='cart' :mini='true' )
+                MiniList( :cart='cart' :mini='true' )
 
             ContinueMini( :cart='cart' @close='close' )
 
 </template>
 
 <script>
-import ItemsList from '@/components/Cart/List.vue'
+import MiniList from '@/components/Cart/MiniList.vue'
 import ContinueMini from '@/components/Cart/ContinueMini.vue'
 
 export default {
     computed: { cart },
-    components: { ItemsList, ContinueMini },
+    components: { MiniList, ContinueMini },
     methods: { checkForClose, close }
 }
 
@@ -60,10 +60,11 @@ function close () {
     .content
         background $white
         box-shadow 0 0 25px RGBA(0, 0, 0, .5)
-        height 980px
+        max-height 980px
         overflow hidden
         padding-top 64px
         position relative
+        width 1140px
 
         .content-div
             max-height 700px
