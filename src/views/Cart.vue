@@ -25,6 +25,7 @@
             ItemsList( v-if='step == 1' :cart='cart' )
             ItemsDelivery( v-if='step == 2' :cart='cart' )
             CartContacts( v-if='step == 3' :cart='cart' )
+            CartBonuses( v-if='step == 4' :cart='cart' )
             
             CartContinue( :step='step' )
 </template>
@@ -34,11 +35,12 @@
 import ItemsList from '@/components/Cart/List.vue'
 import ItemsDelivery from '@/components/Cart/Delivery.vue'
 import CartContacts from '@/components/Cart/Contacts.vue'
+import CartBonuses from '@/components/Cart/Bonuses.vue'
 import CartContinue from '@/components/Cart/Continue.vue'
 
 export default {
     props: ['step'],
-    components: { ItemsList, ItemsDelivery, CartContacts, CartContinue },
+    components: { ItemsList, ItemsDelivery, CartContacts, CartBonuses, CartContinue },
     computed: { cart },
     data: function () {
         return {}

@@ -1,6 +1,10 @@
 <template lang="pug">
-    div( class='cart-items-mini-list' :class='{ mini }' )
+    div( class='cart-items-mini-list' )
         Confirm( v-bind='{ question }' @answer='answer' )
+
+        span( class='remove-all' @click='removeAll' )
+            span( class='text' ) Очистить корзину
+            i( class='icon icon-trash' )
 
         div( v-if='cart.length > 0' )
             div( class='row head' )
@@ -22,7 +26,7 @@ import Confirm from '@/components/Cart/Confirm.vue'
 import MiniItem from '@/components/Cart/MiniItem.vue'
 
 export default {
-    props: ['cart', 'mini'],
+    computed: { cart },
     components: { Confirm, MiniItem },
     methods: { remove, removeAll, answer, confirm },
     data: function () {
@@ -33,6 +37,12 @@ export default {
     }
 }
 
+// Computed
+function cart () {
+    return this.$store.state.cart
+}
+
+// Methods
 async function remove (id) {
     var check = await this.confirm('Удалить товар из корзины?')
 
@@ -43,8 +53,11 @@ async function remove (id) {
 async function removeAll () {
     var check = await this.confirm('Очистить корзину?')
 
-    if ( check === true )
-        this.$store.commit('clear-cart', id)
+    if ( check === true ) {
+        console.log(check)
+        this.$store.commit('clear-cart')
+        console.log(this.$store.state.cart)
+    }
 }
 
 function answer (answer) {
@@ -73,7 +86,29 @@ function confirm (question) {
 
 .cart-items-mini-list
     margin 32px 16px
+    padding-top 32px
     position relative
+
+    .remove-all
+        align-items center
+        display inline-flex
+        font-size 18px
+        position absolute
+        right 40px
+        top -5px
+
+        .text
+            color $dark-gray
+            display inline-block
+            margin 0 8px
+            position relative
+            top -4px
+
+        .icon-trash
+            color $red
+            display inline-block
+            font-size 20px
+            margin 0 4px
 
     .row
         align-items center

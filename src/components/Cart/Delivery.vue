@@ -1,7 +1,9 @@
 <template lang="pug">
     div( class='cart-delivery-div' )
         div( class='delivery-column' )
-            h3( class='step-title' ) Сборка и доставка
+            h3( class='step-title' )
+                span( class='red' ) 01/
+                span Сборка и доставка
             div( class='delivery-params' )
                 RadioInput( name='delivery' :options='delivery.options' v-model='delivery.selected' )
 
@@ -13,27 +15,30 @@
                     TextInput( label='Квартира' v-model='address.home' placeholder='Например: 2' )
                     TextInput( label='Домофон' v-model='address.dphone' placeholder='Номер если есть' )
                     div( v-if='delivery.selected > 1' name='lift' )
-                        br
+                        TextInput( label='Этаж' v-model='address.floor' placeholder='' )
                         span( class='lift-label-text' ) Лифт
                         RadioInput(
                             v-model='address.lift.selected'
                             :options='address.lift.options' )
 
         div( class='delivery-column' v-if='delivery.selected > 0' )
-            h3( class='step-title' ) Доставка
+            h3( class='step-title' ) 
+                span( class='red' ) 02/
+                span Доставка
             SelectInput( label='Дата доставки' :options='delivery.availableDates' v-model='delivery.date' )
             p( class='row-text' )
-                 span( class='label-text' ) Стоимость доставки
-                 span( class='text' ) 2432 рублей
+                 span( class='label-text' ) Стоимость доставки:
+                 span( class='text' ) 0 рублей
 
         div( class='delivery-column' v-if='delivery.selected > 0' )
-            h3( class='step-title' ) Сборка
-            RadioInput( :options='build.options' v-model='build.selected' )
-            div( v-if='build.selected > 0' )
-                SelectInput( label='Дата доставки' :options='delivery.availableDates' v-model='delivery.date' )
-                p( class='row-text' )
-                    span( class='label-text' ) Стоимость сборки
-                    span( class='text' ) 2432 рублей
+            h3( class='step-title' ) 
+                span( class='red' ) 03/
+                span Сборка
+                
+            SelectInput( label='Дата сборки' :options='build.options' v-model='delivery.date' )
+            p( class='row-text' )
+                span( class='label-text' ) Стоимость сборки:
+                span( class='text' ) 0 рублей
 
                 
 </template>
@@ -52,8 +57,7 @@ export default {
                 include: 0,
                 selected: 0,
                 date: 0,
-                dates: ['17 Июля', '18 Июля', '18 Июля', '19 Июля', '18 Июля'],
-                options: ['Без сборки', 'Добавить сборку']
+                options: ['17 Июля', '18 Июля', '18 Июля', '19 Июля', '18 Июля']
             },
 
             delivery: {
@@ -68,6 +72,7 @@ export default {
                 building: '',
                 home: '',
                 dphone: '',
+                floor: '',
                 lift: {
                     selected: 0,
                     options: ['Нет', 'Пассажирский', 'Грузовой']
@@ -85,6 +90,8 @@ export default {
 </script>
 
 <style lang="stylus">
+@import '~@/style/palette'
+
 .cart-delivery-div
     align-items top
     display grid
@@ -93,11 +100,25 @@ export default {
     margin 64px 0
     padding-left 136px
 
+    .step-title .red
+        color $red
+
     .column-title
         margin-top 16px
 
     .lift-label-text
         display block
         font-size 18px
-        margin 6px 2px
+        margin 12px 2px
+
+    .row-text
+        display block
+        font-size 18px
+        font-weight 500
+        margin 16px 0
+
+        .text
+            display block
+            font-size 20px
+            font-weight 400
 </style>

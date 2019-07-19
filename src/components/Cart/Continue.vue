@@ -17,7 +17,7 @@
             span( class='value' ) {{ (total + build).toLocaleString('ru-RU') }} руб
 
         p( class='row' )
-            button( class='next' @click='next' ) Далее
+            button( class='next' @click='next' ) {{ step < 4 ? 'Далее' : 'Оформить покупку' }}
 </template>
 
 <script>
@@ -45,7 +45,8 @@ function discount () {
 
 // Methods
 function next () {
-    this.$router.push(`/cart/${ parseInt(this.step) + 1 }`)
+    if ( this.step < 4 )
+        this.$router.push(`/cart/${ parseInt(this.step) + 1 }`)
 }
 </script>
 

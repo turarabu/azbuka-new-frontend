@@ -1,5 +1,5 @@
 <template lang="pug">
-    div( class='cart-items-list' :class='{ mini }' )
+    div( class='cart-items-list' )
         span( class='remove-all' @click='removeAll' )
             span( class='text' ) Очистить корзину
             i( class='icon icon-trash' )
@@ -22,7 +22,7 @@ import Confirm from '@/components/Cart/Confirm.vue'
 import CartItem from '@/components/Cart/Item.vue'
 
 export default {
-    props: ['cart', 'mini'],
+    props: ['cart'],
     components: { Confirm, CartItem },
     methods: { remove, removeAll, answer, confirm },
     data: function () {
@@ -74,8 +74,6 @@ function confirm (question) {
 .cart-items-list
     margin 32px 0
     position relative
-    &.mini
-        margin 32px 16px
 
     .remove-all
         align-items center

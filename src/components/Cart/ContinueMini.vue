@@ -1,7 +1,7 @@
 <template lang="pug">
     div( class='cart-mini-countinue-div' )
         span( class='total' ) Стоимость товаров:
-            span( class='summ' ) {{ total.toLocaleString('ru-RU') }} руб
+            span( class='summ' ) {{ total(cart).toLocaleString('ru-RU') }} руб
 
         div( class='buttons-div' )
             span( class='continue' @click='$emit("close")' ) Продолжить покупки
@@ -11,16 +11,24 @@
 
 <script>
 export default {
-    props: ['cart'],
-    computed: { total }
+    computed: { cart },
+    methods: { total }
 }
 
-function total () {
+// Computed
+function cart () {
+    return this.$store.state.cart
+}
+
+// Methods
+function total (cart) {
     var total = 0
-    for ( let item of this.cart )
+
+    for ( let item of cart )
         total += item.total
 
     return total
+
 }
 </script>
 
