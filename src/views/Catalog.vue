@@ -12,10 +12,7 @@ import CatalogChilds from '@/components/Catalog/Childs.vue'
 export default {
     props: ['id'],
     components: { CatalogItems, CatalogChilds },
-    computed: { catalog, showItems },
-    updated: function () {
-        console.log(this.catalog)
-    }
+    computed: { catalog, showItems }
 }
 
 // Computed

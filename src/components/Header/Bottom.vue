@@ -56,7 +56,6 @@ function search () {
         },
 
         set (value) {
-            console.log(value)
             this.$store.commit('set-search', {
                 prop: 'name',
                 value: {

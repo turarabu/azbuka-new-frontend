@@ -6,14 +6,15 @@
 
                 i( class='icon icon-angle-down' )
                 select( class='select' v-model='city' )
-                    option( value='0' ) Владивосток
+                    option( v-for='(city, index) of cities' :value='index' ) {{ city.name }}
 
             label( class='label' )
-                span( class='meta' ) Выберите магазин:
+                span( class='meta' ) Магазин:
 
                 i( class='icon icon-angle-down' )
                 select( class='select' v-model='shop' )
-                    option( value='0' ) АМ Русская 2K
+                    option( v-if='shops.length < 1' disabled value='0' ) Выберите город
+                    option( v-else v-for='(cshop, index) of shops' :value='index' ) {{ cshop.name }}
 
             button( class='confirm' @click='confirm' ) Продолжить
 
@@ -27,16 +28,52 @@
 import help from '@/script/script'
 
 export default {
-    methods: { confirm, download, getCatalog, getItems, getStocks },
+    computed: { shops },
+    methods: {
+        getData,
+        confirm,
+        download,
+        getCities,
+        getShops,
+        getCatalog,
+        getItems,
+        getStocks
+    },
     data: function () {
+        this.getData((cities, shops) => {
+            for ( let city of cities ) {
+                city.shops = []
+                for ( let shop of shops ) {
+                    if ( city.id === shop.city )
+                        city.shops.push(shop)
+                }
+            }
+
+            this.cities = cities
+            console.log(this.cities[this.city].shops)
+            this.$forceUpdate()
+        })
+
         return {
             comment: 'Загрузка...',
             city: 0,
             shop: 0,
             step: 0,
-            load: 0
+            load: 0,
+            cities: []
         }
     }
+}
+
+async function getData (callback) {
+    var cities = await this.getCities()
+    var shops = await this.getShops()
+
+    callback(cities, shops)
+}
+
+function shops () {
+    return this.cities.length > 0 && this.cities[this.city].shops || []
 }
 
 // Methods
@@ -77,6 +114,22 @@ async function download () {
 
         this.$emit('ready', true)
     }, 10)
+}
+
+function getCities () {
+    return ajax('city/list', request => {
+        return new Promise((resolve, reject) => {
+            handle.call(request, resolve, reject, this)
+        })
+    })
+}
+
+function getShops () {
+    return ajax('shop/list', request => {
+        return new Promise((resolve, reject) => {
+            handle.call(request, resolve, reject, this)
+        })
+    })
 }
 
 function getCatalog () {

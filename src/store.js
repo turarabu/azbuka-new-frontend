@@ -32,7 +32,8 @@ function state () {
         popup: {
             preview: false,
             fullSlider: false,
-            cart: false
+            cart: false,
+            shops: false
         }
     }
 }

@@ -5,6 +5,7 @@
 
         CartPreview
         ItemPreview
+        ShopsList
         FullSlider
         MiniCart
 
@@ -19,10 +20,19 @@ import MiniCart from '@/components/Cart/Mini.vue'
 
 import CartPreview from '@/components/Cart/Preview.vue'
 import ItemPreview from '@/components/Item/Preview.vue'
+import ShopsList from '@/components/Item/Shops.vue'
 import FullSlider from '@/components/Item/FullSlider.vue'
 
 export default {
-    components: { HeaderComponent, Preloader, CartPreview, ItemPreview, FullSlider, MiniCart },
+    components: {
+        HeaderComponent,
+        Preloader,
+        CartPreview,
+        ShopsList,
+        ItemPreview,
+        FullSlider,
+        MiniCart
+    },
     computed: { scrollable },
     methods: { start },
     mounted: init,

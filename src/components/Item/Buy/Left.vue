@@ -18,10 +18,11 @@
 
         div( v-else class='lefts-in-shop-div' )
             div( class='lefts-in-shop' )
-                span( class='lefts-in-shop-title' ) В наличии на складах
+                span( class='lefts-in-shop-title' ) В наличии в магазинах
                 i( class='icon icon-map-marker' )
-                select( class='lefts-in-shop-select' )
-                    option( v-for='warehouse in selected.warehouses' ) {{ warehouse }}
+                span( class='lefts-in-shop-select' @click='openShops' ) Список
+                //- select( class='lefts-in-shop-select' )
+                //-     option( v-for='warehouse in selected.warehouses' ) {{ warehouse }}
 
             div( class='lefts-in-shop' )
                 span( class='lefts-in-shop-title' ) Количество
@@ -39,7 +40,7 @@
 export default {
     props: ['item', 'option', 'value'],
     computed: { left, selected },
-    methods: { minTransit, setCount },
+    methods: { openShops, minTransit, setCount },
     mounted: init,
     data: function () {
         return {
@@ -52,7 +53,6 @@ function init () {
     if ( this.value > this.left ) {
         let item = this.item
         let inTransit = item.transits[this.option] || 0
-        console.log('transit', Math.min(this.value, this.left + inTransit))
 
         this.count = Math.min(this.value, this.left + inTransit)
         this.$emit('input', this.count)
@@ -70,6 +70,13 @@ function selected () {
 }
 
 // Methods
+function openShops () {
+    this.$store.commit('set-popup', {
+        popup: 'shops',
+        value: this.item
+    })
+}
+
 function minTransit () {
     var array = [ ...this.selected.inTransit ]
     var config = {

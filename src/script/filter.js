@@ -1,5 +1,6 @@
 export default {
     items: filterItems,
+    sort: sortItems,
     range: filterRange,
     select: filterSelect,
     search: filterSearch
@@ -76,4 +77,22 @@ function childProp (item, prop) {
     }
 
     return false
+}
+
+function sortItems (items, sort) {
+    var list = JSON.parse( JSON.stringify(items) )
+
+    if ( sort.type === 'name' )
+        list.sort((a, b) => {
+            if ( a.name.toLowerCase() > b.name.toLowerCase() )
+                return -1
+            else return 1
+        })
+    
+    else list.sort((a, b) => {
+        return Math.min( ...a.prices.mins ) - Math.min( ...b.prices.mins )
+    })
+
+    return sort.direction === 'asc'
+        ? list : list.reverse()
 }
