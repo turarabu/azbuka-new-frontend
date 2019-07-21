@@ -73,7 +73,10 @@ function selected () {
 function openShops () {
     this.$store.commit('set-popup', {
         popup: 'shops',
-        value: this.item
+        value: {
+            source: this.item,
+            selected: this.selected
+        }
     })
 }
 

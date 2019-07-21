@@ -2,12 +2,12 @@
     div( class='cart-contact-div' )
         h3( class='step-title' ) Контакты
 
-        TextInput( label='Телефон' v-model='contact.phone' placeholder='Введите' )
-        TextInput( label='Фамилия' v-model='contact.lastName' placeholder='' )
-        TextInput( label='Имя' v-model='contact.firstName' placeholder='' )
-        TextInput( label='Почта' v-model='contact.email' placeholder='' )
+        TextInput( label='Телефон' v-model='c.contact.phone' placeholder='Введите' )
+        TextInput( label='Фамилия' v-model='c.contact.lastName' placeholder='' )
+        TextInput( label='Имя' v-model='c.contact.firstName' placeholder='' )
+        TextInput( label='Почта' v-model='c.contact.email' placeholder='' )
 
-        CheckBox( label='Получать рассылку' v-model='contact.spams' )
+        CheckBox( label='Получать рассылку' v-model='c.contact.spams' )
 </template>
 
 <script>
@@ -16,17 +16,11 @@ import CheckBox from '@/components/Filter/CheckBox.vue'
 
 export default {
     components: { TextInput, CheckBox },
-    data: function () {
-        return {
-            contact: {
-                phone: '+7',
-                lastName: '',
-                firstName: '',
-                email: '',
-                spams: true
-            }
-        }
-    }
+    computed: { c }
+}
+
+function c () {
+    return this.$store.state.costumer
 }
 </script>
 

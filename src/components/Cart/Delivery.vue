@@ -5,41 +5,42 @@
                 span( class='red' ) 01/
                 span Сборка и доставка
             div( class='delivery-params' )
-                RadioInput( name='delivery' :options='delivery.options' v-model='delivery.selected' )
+                RadioInput( name='delivery' :options='c.delivery.options' v-model='c.delivery.selected' )
 
-                div( v-if='delivery.selected > 0' )
+                div( v-if='c.delivery.selected > 0' )
                     h3( class='column-title' ) Адрес доставки
-                    SelectInput( label='Выберите регион' :options='address.region.options' v-model='address.region.selected' )
-                    TextInput( label='Улица' v-model='address.street' placeholder='Например: Шепеткова' )
-                    TextInput( label='Дом' v-model='address.building' placeholder='Например: 37' )
-                    TextInput( label='Квартира' v-model='address.home' placeholder='Например: 2' )
-                    TextInput( label='Домофон' v-model='address.dphone' placeholder='Номер если есть' )
-                    div( v-if='delivery.selected > 1' name='lift' )
-                        TextInput( label='Этаж' v-model='address.floor' placeholder='' )
+                    SelectInput( label='Выберите регион' :options='c.address.region.options' v-model='c.address.region.selected' )
+                    TextInput( label='Улица' v-model='c.address.street' placeholder='Например: Шепеткова' )
+                    TextInput( label='Дом' v-model='c.address.building' placeholder='Например: 37' )
+                    TextInput( label='Квартира' v-model='c.address.home' placeholder='Например: 2' )
+                    TextInput( label='Домофон' v-model='c.address.dphone' placeholder='Номер если есть' )
+                    div( v-if='c.delivery.selected > 1' name='lift' )
+                        TextInput( label='Этаж' v-model='c.address.floor' placeholder='' )
                         span( class='lift-label-text' ) Лифт
                         RadioInput(
-                            v-model='address.lift.selected'
-                            :options='address.lift.options' )
+                            v-model='c.address.lift.selected'
+                            :options='c.address.lift.options' )
 
-        div( class='delivery-column' v-if='delivery.selected > 0' )
+        div( class='delivery-column' v-if='c.delivery.selected > 0' )
             h3( class='step-title' ) 
                 span( class='red' ) 02/
                 span Доставка
-            SelectInput( label='Дата доставки' :options='delivery.availableDates' v-model='delivery.date' )
+            SelectInput( label='Дата доставки' :options='c.delivery.availableDates' v-model='c.delivery.date' )
             p( class='row-text' )
                  span( class='label-text' ) Стоимость доставки:
-                 span( class='text' ) 0 рублей
+                 span( class='text' ) 
+                    span( v-if='!(c.delivery.selected > 1 && c.address.lift.selected !== 2)' ) 970 рублей
+                    span( v-else ) {{ c.address.floor * 20 + 950 }} рублей
 
-        div( class='delivery-column' v-if='delivery.selected > 0' )
+        div( class='delivery-column' )
             h3( class='step-title' ) 
                 span( class='red' ) 03/
                 span Сборка
                 
-            SelectInput( label='Дата сборки' :options='build.options' v-model='delivery.date' )
+            SelectInput( label='Дата сборки' :options='c.build.options' v-model='c.delivery.date' )
             p( class='row-text' )
                 span( class='label-text' ) Стоимость сборки:
-                span( class='text' ) 0 рублей
-
+                span( class='text' ) {{ buildCount().toLocaleString('ru-RU') }} рублей
                 
 </template>
 
@@ -50,41 +51,27 @@ import TextInput from '@/components/Filter/Text.vue'
 
 export default {
     components: { RadioInput, SelectInput, TextInput },
-    methods: {  },
-    data: function () {
-        return {
-            build: {
-                include: 0,
-                selected: 0,
-                date: 0,
-                options: ['17 Июля', '18 Июля', '18 Июля', '19 Июля', '18 Июля']
-            },
+    computed: { c, cart },
+    methods: { buildCount }
+}
 
-            delivery: {
-                date: 0,
-                selected: 0,
-                availableDates: ['16 Июля', '17 Июля', '18 Июля', '18 Июля', '19 Июля'],
-                options: ['Самовывоз', 'Доставка до подъезда', 'Доставка в квартиру']
-            },
+// Computed
+function cart () {
+    return this.$store.state.cart
+}
 
-            address: {
-                street: '',
-                building: '',
-                home: '',
-                dphone: '',
-                floor: '',
-                lift: {
-                    selected: 0,
-                    options: ['Нет', 'Пассажирский', 'Грузовой']
-                },
+function c () {
+    return this.$store.state.costumer
+}
 
-                region: {
-                    selected: 0,
-                    options: ['Первый регион', 'Второй регион']
-                }
-            }
-        }
-    }
+// Methods
+function buildCount () {
+    var total = 0
+
+    for (let item of this.cart)
+        total += Math.max(600, item.total * 0.05)
+
+    return parseInt(total)
 }
 
 </script>

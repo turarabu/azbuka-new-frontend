@@ -5,22 +5,22 @@
         img( class='image' src='/images/bonuses-card.png' )
         div( class='bonuses-text' )
             p( class='text' ) Товарищи! сложившаяся структура организации обеспечивает широкому кругу (специалистов) участие в формировании существенных финансовых и административных условий
-            TextInput( label='Телефон' v-model='bonuses.phone' placeholder='Введите' )
-            button( class='button' ) Проверить
+            TextInput( label='Телефон' v-model='c.bonuses.phone' placeholder='Введите' )
+            button( class='button' :class='{inactive}' @click='checkBonuses' ) Проверить
 
             p( class='row' )
                 span( class='row-title' ) Балов на бонусной карте:
-                span( class='row-text' ) 0 рублей
+                span( class='row-text' ) {{ c.bonuses.have.toLocaleString('ru-RU') }} рублей
 
             p( class='row' )
                 span( class='row-title' ) Ваши бонусы с этой покупки:
-                span( class='row-text' ) 0 рублей
+                span( class='row-text' ) {{ cartCount().toLocaleString('ru-RU') }} рублей
 
             p( class='row' )
                 span( class='row-title' ) Как вы хотите вопользоваться бонусами:
                 RadioInput(
-                    v-model='bonuses.use'
-                    :options='bonuses.options' )
+                    v-model='c.bonuses.use'
+                    :options='c.bonuses.options' )
 
 </template>
 
@@ -29,17 +29,73 @@ import RadioInput from '@/components/Filter/Radio.vue'
 import TextInput from '@/components/Filter/Text.vue'
 
 export default {
+    computed: { c, cart },
     components: { RadioInput, TextInput },
+    methods: { cartCount, checkBonuses },
     data: function () {
         return {
-            bonuses: {
-                phone: '+7',
-                options: ['Накопить', 'Потратить'],
-                use: 0
-            }
+            inactive: false
         }
     }
 }
+
+// Computed
+function cart () {
+    return this.$store.state.cart
+}
+
+function c () {
+    return this.$store.state.costumer
+}
+
+// Methods
+function cartCount () {
+    var total = 0
+
+    for (let item of this.cart)
+        total += item.total
+
+    return parseInt(total / 10)
+}
+
+function checkBonuses () {
+    if ( this.inactive === true )
+        return false
+
+    else {
+        this.inactive = true
+        this.c.bonuses.have = 0
+
+        return ajax(`cart/bonuse?phone=${ this.c.bonuses.phone }`, async request => {
+            var data = await handle(request)
+            this.c.bonuses.have = data.bonusPoint
+
+            return this.inactive = false
+        })
+    }
+}
+
+// Helper functions
+function ajax (method, callback) {
+    var request = new XMLHttpRequest()
+
+    request.open('GET', `http://95.167.9.22:8081/${method}`, true)
+    request.send()
+
+    return callback(request)
+}
+
+function handle (request) {
+    return new Promise(resolve => {
+        request.addEventListener('readystatechange', event => {
+            if (request.readyState === 4 && request.status === 200) {
+                var json = JSON.parse(request.responseText)
+                resolve(json.data)
+            }
+        })
+    })
+}
+
 </script>
 
 <style lang="stylus">
@@ -77,6 +133,8 @@ export default {
         margin 12px 0
         outline none
         padding 8px 24px
+        &.inactive
+            background lighten($red, 10)
 
     .row
         margin 12px 0

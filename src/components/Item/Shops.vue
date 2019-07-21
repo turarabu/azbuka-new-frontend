@@ -5,27 +5,31 @@
             div( class='top-line' ) Товары в наличии
 
             div( class='content-div' )
-                h3( class='title' ) {{ shops.name }}
+                h3( class='title' ) {{ shops.source.name }}
                 p( class='gray-text' ) В наличии в магазинах
 
                 p( class='row' )
                     span( class='shop' )
                         i( class='icon icon-map-marker' )
-                        span ТЦ Октябрь, ул. Борисенко 45
-                    span( class='count' ) 3 {{ shops.unit }}
+                        span АМ Русская 2К
+                    span( class='count' ) {{ selected.left }} {{ shops.source.unit }}
                 
 
 </template>
 
 <script>
 export default {
-    computed: { shops },
+    computed: { shops, selected },
     methods: { checkForClose, close }
 }
 
 // Computed
 function shops () {
     return this.$store.state.popup.shops
+}
+
+function selected () {
+    return this.$store.state.popup.shops.selected
 }
 
 // Methods

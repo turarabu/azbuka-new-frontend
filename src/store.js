@@ -22,6 +22,7 @@ export function Store () {
 
 function state () {
     return {
+        costumer: costumer(),
         cart: [],
         catalog: [],
         stocks: [],
@@ -34,6 +35,56 @@ function state () {
             fullSlider: false,
             cart: false,
             shops: false
+        }
+    }
+}
+
+function costumer () {
+    return {
+        build: {
+            include: 0,
+            selected: 0,
+            date: 0,
+            options: ['22 июля']
+        },
+
+        delivery: {
+            date: 0,
+            selected: 0,
+            availableDates: ['21 июля'],
+            options: ['Самовывоз', 'Доставка до подъезда', 'Доставка в квартиру']
+        },
+
+        address: {
+            street: '',
+            building: '',
+            home: '',
+            dphone: '',
+            floor: '',
+            lift: {
+                selected: 0,
+                options: ['Нет', 'Пассажирский', 'Грузовой']
+            },
+
+            region: {
+                selected: 0,
+                options: ['ст. Спутник, ст. Садгород']
+            }
+        },
+
+        contact: {
+            phone: '+7',
+            lastName: '',
+            firstName: '',
+            email: '',
+            spams: true
+        },
+        
+        bonuses: {
+            have: 0,
+            phone: '+7',
+            options: ['Накопить', 'Потратить'],
+            use: 0
         }
     }
 }
