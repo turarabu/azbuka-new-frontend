@@ -1,83 +1,74 @@
 <template lang="pug">
-    div( class='filter-options-div' )
-        label( class='filter-option' v-for='option in value.options' )
-            input( class='input' type='checkbox' @change='changed(option)' )
-            span( class='check-status' )
-                span( class='icon' ) +
-            span( class='check-text' ) {{ option }}
+    div( class='label-div' )
+        span( class='label-text' ) {{ labelText }}
+        label( v-for='(option, index) in options' class='option-label' @click='set(index)' )
+            input( class='input' type='radio' :value='index' :checked='index == current' )
+            span( class='status-box' )
+            span( class='option-text' ) {{ option }}
 </template>
 
 <script>
 export default {
-    props: ['value'],
-    methods: { changed },
+    props: ['options', 'value', 'label'],
+    methods: { set },
     data: function () {
         return {
-            checked: []
+            current: this.value,
+            labelText: this.label || ''
         }
     }
 }
 
-function changed (option) {
-    if (this.checked.includes(option) === false) 
-        this.checked.push(option)
-
-    else for (let i in this.checked) {
-        if (this.checked[i] === option) {
-            this.checked.splice(i, 1)
-            break
-        }
-    }
-
-    return this.$emit('input', clones(this.value, {
-        value: this.checked
-    }))
-}
-
-function clones (...objs) {
-    var list = []
-
-    for ( let obj of objs )
-        list.push(JSON.parse( JSON.stringify(obj) ))
-
-    return Object.assign({}, ...list)
+function set (index) {
+    this.current = index
+    this.$emit('input', this.current)
 }
 </script>
 
 <style lang="stylus">
 @import '~@/style/palette'
 
-.filter-options-div
+.label-div
     display block
-    width 100%
+    margin 12px 0
 
-    .filter-option
+    .label-text
+        display block
+        font-size 18px
+        font-weight 500
+        margin 4px 0
+
+    .option-label
         align-items center
         display flex
-        margin 12px 0
+        margin 4px 0
         width 100%
-        
-        .input
-            display none
-            &:checked ~ .check-status
-                background $red
 
-        .check-status
+        .status-box
             align-items center
-            background $white
-            border 1px solid $red
+            border 2px solid $red
             border-radius 50%
-            color $white
             display inline-flex
             justify-content center
-            margin-right 12px
-            height 24px
-            width 24px
+            padding 3px
+            height 18px
+            width 18px
+            &:after
+                background $white
+                border-radius inherit
+                content ''
+                display block
+                height 100%
+                width 100%
 
-            .icon
-                color $white
-                font-size 18px
-
-        .check-text
+        .option-text
+            display inline-block
             font-size 18px
+            margin 0 6px
+
+        .input
+            display none
+            &:checked ~ .status-box:after
+                background $red
+
 </style>

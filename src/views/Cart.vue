@@ -25,7 +25,7 @@
             ItemsList( v-if='step == 1' :cart='cart' )
             ItemsDelivery( v-if='step == 2' :cart='cart' )
             CartContacts( v-if='step == 3' :cart='cart' )
-            CartBonuses( v-if='step == 4' :cart='cart' )
+            CartBonuses( v-if='step == 4' )
             
             CartContinue( :step='step' )
 </template>

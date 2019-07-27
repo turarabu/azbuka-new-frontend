@@ -5,12 +5,13 @@
         img( class='image' src='/images/bonuses-card.png' )
         div( class='bonuses-text' )
             p( class='text' ) Товарищи! сложившаяся структура организации обеспечивает широкому кругу (специалистов) участие в формировании существенных финансовых и административных условий
-            TextInput( label='Телефон' v-model='c.bonuses.phone' placeholder='Введите' )
-            button( class='button' :class='{inactive}' @click='checkBonuses' ) Проверить
+            Input( :value='form.phone' @input='form.phone.text = $event' )
+            button( v-if='inactive' class='button inactive' ) Проверяем...
+            button( v-else class='button' @click='checkBonuses' ) Проверить
 
             p( class='row' )
                 span( class='row-title' ) Балов на бонусной карте:
-                span( class='row-text' ) {{ c.bonuses.have.toLocaleString('ru-RU') }} рублей
+                span( class='row-text' ) {{ form.have.toLocaleString('ru-RU') }} рублей
 
             p( class='row' )
                 span( class='row-title' ) Ваши бонусы с этой покупки:
@@ -18,23 +19,36 @@
 
             p( class='row' )
                 span( class='row-title' ) Как вы хотите вопользоваться бонусами:
-                RadioInput(
-                    v-model='c.bonuses.use'
-                    :options='c.bonuses.options' )
+                Options(
+                    v-model='form.use'
+                    :options='form.useOptions'
+                    :label='form.useText'
+                    @click='checkOut' )
 
 </template>
 
 <script>
-import RadioInput from '@/components/Filter/Radio.vue'
-import TextInput from '@/components/Filter/Text.vue'
+import Input from '@/components/UI/Input.vue'
+import Options from '@/components/Filter/Options.vue'
 
 export default {
-    computed: { c, cart },
-    components: { RadioInput, TextInput },
-    methods: { cartCount, checkBonuses },
+    components: { Input, Options },
+    computed: { cart },
+    methods: { cartCount, checkBonuses, checkOut },
     data: function () {
         return {
-            inactive: false
+            inactive: false,
+            form: {
+                have: 0,
+                use: 0,
+                useText: 'Как вы хотите воспользоваться бонусами:',
+                useOptions: ['Накопить', 'Потратить'],
+                phone: {
+                    label: 'Телефон',
+                    placeholder: 'Введите',
+                    text: '+7',
+                }
+            }
         }
     }
 }
@@ -42,10 +56,6 @@ export default {
 // Computed
 function cart () {
     return this.$store.state.cart
-}
-
-function c () {
-    return this.$store.state.costumer
 }
 
 // Methods
@@ -64,15 +74,36 @@ function checkBonuses () {
 
     else {
         this.inactive = true
-        this.c.bonuses.have = 0
-
-        return ajax(`cart/bonuse?phone=${ this.c.bonuses.phone }`, async request => {
+        this.form.have = 0
+        return ajax(`cart/bonuse?phone=${ this.form.phone.text }`, async request => {
             var data = await handle(request)
-            this.c.bonuses.have = data.bonusPoint
+            this.form.have = 123
+            // this.form.have = data.bonusPoint
 
+            this.checkOut()
             return this.inactive = false
         })
     }
+}
+
+function checkOut () {
+    if ( this.form.use === 0 )
+        this.$store.commit('pass-cart', {
+            step: 3,
+            value: {
+                have: 0,
+                use: 0
+            }
+        })
+
+    else this.$store.commit('pass-cart', {
+        step: 3,
+        value: {
+            have: this.form.have,
+            use: 1
+        }
+    })
+
 }
 
 // Helper functions
@@ -88,9 +119,10 @@ function ajax (method, callback) {
 function handle (request) {
     return new Promise(resolve => {
         request.addEventListener('readystatechange', event => {
+            console.log('ready!')
             if (request.readyState === 4 && request.status === 200) {
                 var json = JSON.parse(request.responseText)
-                resolve(json.data)
+                resolve({})
             }
         })
     })
@@ -119,9 +151,10 @@ function handle (request) {
 
     .bonuses-text
         display block
+        width 360px
 
         .text
-            margin-bottom 16px
+            margin-bottom 24px
             width 350px
 
     .button

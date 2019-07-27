@@ -8,6 +8,7 @@ export function Store () {
         state: state(),
         mutations: {
             'set-state': setState,
+            'pass-cart': passCart,
             'set-popup': setPopup,
             'to-cart': toCart,
             'set-cart': setCart,
@@ -40,53 +41,14 @@ function state () {
 }
 
 function costumer () {
-    return {
-        build: {
-            include: 0,
-            selected: 0,
-            date: 0,
-            options: ['22 июля']
-        },
+    return [undefined, {}, {}, {
+        have: 0,
+        use: 0,
+    }]
+}
 
-        delivery: {
-            date: 0,
-            selected: 0,
-            availableDates: ['21 июля'],
-            options: ['Самовывоз', 'Доставка до подъезда', 'Доставка в квартиру']
-        },
-
-        address: {
-            street: '',
-            building: '',
-            home: '',
-            dphone: '',
-            floor: '',
-            lift: {
-                selected: 0,
-                options: ['Нет', 'Пассажирский', 'Грузовой']
-            },
-
-            region: {
-                selected: 0,
-                options: ['ст. Спутник, ст. Садгород']
-            }
-        },
-
-        contact: {
-            phone: '+7',
-            lastName: '',
-            firstName: '',
-            email: '',
-            spams: true
-        },
-        
-        bonuses: {
-            have: 0,
-            phone: '+7',
-            options: ['Накопить', 'Потратить'],
-            use: 0
-        }
-    }
+function passCart (state, data) {
+    state.costumer[data.step] = data.value
 }
 
 function setState (state, data) {

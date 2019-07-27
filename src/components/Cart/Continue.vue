@@ -6,87 +6,89 @@
 
         p( class='row' )
             span( class='key' ) Доставка и сборка:
-            span( class='value' ) {{ build }} руб
+            span( class='value' ) {{ (delivery().price + build()).toLocaleString('ru-RU') }} руб
 
         p( class='row' )
             span( class='key' ) Ваша скидка:
-            span( class='value' ) {{ discount }} руб
+            span( class='value' ) {{ bonuses }} руб
 
         p( class='row' )
             span( class='key' ) Итого к оплате:
-            span( class='value' ) {{ (total + build).toLocaleString('ru-RU') }} руб
+            span( class='value' ) {{ ((total + delivery().price + build()) - bonuses).toLocaleString('ru-RU') }} руб
 
         p( class='row' )
             button( class='next' @click='next' ) {{ step < 4 ? 'Далее' : 'Оформить покупку' }}
-
-        Confirm( v-bind='{ question }' @answer='answer' )
 </template>
 
 <script>
-import Confirm from '@/components/Cart/Confirm.vue'
-
 export default {
     props: ['step'],
-    components: { Confirm },
-    computed: { c, total, build, discount },
-    methods: { next, order, getItems, answer, confirm },
+    components: {  },
+    computed: { cart, costumer, total, bonuses },
+    methods: { delivery, build, getBuildPrice, next },
     data: function () {
         return {
-            question: false,
-            waiting: false
+            services: getServices()
         }
     }
 }
 
-function c () {
+// Computed
+function cart () {
+    return this.$store.state.cart
+}
+
+function costumer () {
     return this.$store.state.costumer
 }
 
 function total () {
     var total = 0
-    for ( let item of this.$store.state.cart )
+
+    for (let item of this.cart)
         total += item.total
 
-    return total
+    return parseInt(total)
 }
 
-function build () {
-    var total = 0
-    for ( let item of this.$store.state.cart )
-        total += Math.max(600, item.total / 10)
-
-    return total
-}
-
-function discount () {
-    return 0
+function bonuses () {
+    return this.$store.state.costumer[3].have
 }
 
 // Methods
-function next () {
-    if ( this.step < 4 )
-        this.$router.push(`/cart/${ parseInt(this.step) + 1 }`)
-    else this.order()
+function delivery () {
+    return this.costumer[1].complete && this.costumer[1].complete.delivery || {price: 0}
 }
 
-function answer (answer) {
-    this.question = false
-
-    if ( this.waiting === false )
-        return
+function build () {
+    var result = 0
+    var price = this.getBuildPrice()
+    for ( let item of this.cart )
+        result += Math.max(price.minPrice, item.source.prices.mins[item.option] * (price.percent / 100) ) * item.count
     
-    else this.waiting(answer)
+    return result
 }
 
-function confirm (question) {
-    this.question = question
+function next () {
+    switch (this.step) {
+        case '1':
+            return this.$router.push('/cart/2')
+        case '2':
+            if ( this.$store.state.costumer[1] !== false )
+                return this.$router.push('/cart/3')
+        case '3':
+            if ( this.$store.state.costumer[2] !== false )
+                return this.$router.push('/cart/4')
+        case '4':
+            console.log(this.$store.state.costumer)
+    }
+}
 
-    return new Promise (resolve => {
-        this.waiting = (answer) => {
-            this.waiting = false
-            return resolve(answer)
-        }
-    })
+function getBuildPrice () {
+    for ( let service of this.services ) {
+        if ( service.name.toUpperCase() === 'СБОРКА' ) 
+            return service
+    }
 }
 
 function order () {
@@ -98,7 +100,7 @@ function order () {
     data = JSON.stringify(data)
 
     var ajax = new XMLHttpRequest()
-    ajax.open('POST', `http://95.167.9.22:8081/cart/order??shop=000000001&json=${data}`, true)
+    ajax.open('POST', `http://95.167.9.22:8081/cart/order?shop=000000001&json=${data}`, true)
     ajax.setRequestHeader('Content-Type', 'multipart/form-data')
     ajax.send( null )
 
@@ -130,7 +132,7 @@ function getData (c, self, items) {
 
             "assembly": {
                 "date":"20190722",
-                "time": "До 15",
+                "time": "До15",
                 "price": self.build
             },
             "codeSeller":"916900",
@@ -167,11 +169,21 @@ function getItems () {
             count: item.count,
             assembly: Math.max(600, item.total),
             spendAssembly: true,
-            dateOrder: new Date().toISOString()
+            dateOrder: '1970-01-01T12:00:00.000Z',
+            characteristicId: `${item.source.specs[0].options[item.option].id}`
         })
     }
 
     return list
+}
+
+function getServices () {
+    var ajax = new XMLHttpRequest()
+
+    ajax.open('GET', 'http://95.167.9.22:8081/service/list', false)
+    ajax.send()
+
+    return JSON.parse( ajax.responseText ).data
 }
 
 function objectToFormData (obj, form, namespace) {
