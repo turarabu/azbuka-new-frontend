@@ -15,7 +15,7 @@
                 i( class='icon icon-angle-down' )
 
         div( class='to-item-page-div' v-if='link === true' )
-            router-link( tag='span' class='to-item-page' :to='`/item/${ item.id }`' ) Страница товара
+            router-link( tag='span' class='to-item-page' :to='`/item/${ item.id }`' ) Подробнее о товаре
 
 </template>
 

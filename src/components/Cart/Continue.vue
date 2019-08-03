@@ -57,7 +57,8 @@ function bonuses () {
 
 // Methods
 function delivery () {
-    return this.costumer[1].complete && this.costumer[1].complete.delivery || {price: 0}
+    var price = this.costumer[1].complete && this.costumer[1].complete.delivery || 0
+    return {price: parseInt(price)}
 }
 
 function build () {
@@ -66,7 +67,7 @@ function build () {
     for ( let item of this.cart )
         result += Math.max(price.minPrice, item.source.prices.mins[item.option] * (price.percent / 100) ) * item.count
     
-    return result
+    return parseInt(result)
 }
 
 function next () {
