@@ -86,6 +86,7 @@ function update (type) {
     else if ( type === 'pers' )
         updatePers.call(this)
 
+    this.$forceUpdate()
     return this.$emit('input', clones(this.value, this.num))
 }
 
