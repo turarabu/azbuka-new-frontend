@@ -7,8 +7,8 @@
 
         div( class='double-range' )
             div( class='selected-range' :style='{left: `${ per.min }%`, right: `${ 100 - per.max }%`}' )
-                span( class='point min' @mousedown='active = "min"' )
-                span( class='point max' @mousedown='active = "max"' )
+                span( class='point min' @touchstart='active = "min"' )
+                span( class='point max' @touchstart='active = "max"' )
 </template>
 
 <script>
