@@ -47,19 +47,19 @@ function init () {
     var range = this.$el
 
     document.addEventListener('touchstart', () => { this.active = false })
-    document.addEventListener('touchend', event => { last = event })
+    document.addEventListener('touchend', event => { last = event.touches[0] })
     document.addEventListener('touchmove', event => {
         if ( this.active === false )
             return
 
-        var move = event.screenX - last.screenX
+        var move = event.touches[0].screenX - last.screenX
         var percent = 100 / (range.offsetWidth - 67) * move
 
         if ( this.active === 'min' ) {
             let check = this.per.min + percent
             if ( check >= 0 && check <= this.per.max ) {
                 this.per.min = check
-                last = event
+                last = event.touches[0]
             }
 
             else this.per.min = Math.min(this.per.max, Math.max(0, check))
