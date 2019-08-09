@@ -53,7 +53,7 @@ function init () {
         if ( this.active === false )
             return
 
-        var move = event.touches[0].screenX - last.screenX
+        var move = event.touches[0].clientX - last.clientX
         var percent = 100 / (range.offsetWidth - 67) * move
 
         if ( this.active === 'min' ) {
