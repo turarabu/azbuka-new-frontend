@@ -56,8 +56,10 @@ function init () {
         var move = event.touches[0].clientX - last.clientX
         var percent = 100 / (range.offsetWidth - 67) * move
 
+
         if ( this.active === 'min' ) {
             let check = this.per.min + percent
+            console.log('check for min:', check)
             if ( check >= 0 && check <= this.per.max ) {
                 this.per.min = check
                 last = event.touches[0]
@@ -68,6 +70,7 @@ function init () {
 
         else if ( this.active === 'max' ) {
             let check = this.per.max + percent
+            console.log('check for max:', check)
             if ( check <= 100 && check >= this.per.min ) {
                 this.per.max = check
                 last = event.touches[0]
