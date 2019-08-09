@@ -46,9 +46,9 @@ function init () {
     var last
     var range = this.$el
 
-    document.addEventListener('mouseup', () => { this.active = false })
-    document.addEventListener('mousedown', event => { last = event })
-    document.addEventListener('mousemove', event => {
+    document.addEventListener('touchstart', () => { this.active = false })
+    document.addEventListener('touchend', event => { last = event })
+    document.addEventListener('touchmove', event => {
         if ( this.active === false )
             return
 
