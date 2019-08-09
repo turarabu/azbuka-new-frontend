@@ -49,7 +49,7 @@ function init () {
     document.addEventListener('touchstart', () => { this.active = false })
     document.addEventListener('touchend', event => { last = event.touches[0] })
     document.addEventListener('touchmove', event => {
-        console.log(event.touches[0].screenX, last.screenX, event.touches[0].screenX - last.screenX)
+        console.log(event.touches[0].clientX, last.clientX, event.touches[0].clientX - last.clientX)
         if ( this.active === false )
             return
 
