@@ -49,7 +49,6 @@ function init () {
     document.addEventListener('touchstart', () => { this.active = false })
     document.addEventListener('touchend', event => { last = event.touches[0] })
     document.addEventListener('touchmove', event => {
-        console.log(event.touches[0].clientX, last.clientX, event.touches[0].clientX - last.clientX)
         if ( this.active === false )
             return
 
@@ -70,7 +69,7 @@ function init () {
             let check = this.per.max + percent
             if ( check <= 100 && check >= this.per.min ) {
                 this.per.max = check
-                last = event
+                last = event.touches[0]
             }
 
             else this.per.max = Math.max(this.per.min, Math.min(100, check))
